@@ -1,0 +1,92 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>wpfui-icon.ico</ApplicationIcon>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="wpfui-icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LanguageExt.Core" Version="4.4.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RiotSharp" Version="4.0.0" />
+    <PackageReference Include="WPF-UI" Version="3.0.0-preview.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1 " />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1 " />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\588.png" />
+    <None Remove="Assets\background.png" />
+    <None Remove="Assets\Banners\bronze_banner.png" />
+    <None Remove="Assets\Banners\challenger_banner.png" />
+    <None Remove="Assets\Banners\diamond_banner.png" />
+    <None Remove="Assets\Banners\diamond_banner2.png" />
+    <None Remove="Assets\Banners\diamond_banner3.png" />
+    <None Remove="Assets\Banners\emerald_banner.png" />
+    <None Remove="Assets\Banners\gold_banner.png" />
+    <None Remove="Assets\Banners\grandmaster_banner.png" />
+    <None Remove="Assets\Banners\iron_banner.png" />
+    <None Remove="Assets\Banners\master_banner.png" />
+    <None Remove="Assets\Banners\platinum_banner.png" />
+    <None Remove="Assets\Banners\silver_banner.png" />
+    <None Remove="Assets\Banners\unranked_banner.png" />
+    <None Remove="Assets\Border.png" />
+    <None Remove="Assets\Kindred_1.jpg" />
+    <None Remove="Assets\rankedEmblem\emblem-bronze.png" />
+    <None Remove="Assets\rankedEmblem\emblem-challenger.png" />
+    <None Remove="Assets\rankedEmblem\emblem-diamond.png" />
+    <None Remove="Assets\rankedEmblem\emblem-gold.png" />
+    <None Remove="Assets\rankedEmblem\emblem-grandmaster.png" />
+    <None Remove="Assets\rankedEmblem\emblem-iron.png" />
+    <None Remove="Assets\rankedEmblem\emblem-master.png" />
+    <None Remove="Assets\rankedEmblem\emblem-platinum.png" />
+    <None Remove="Assets\rankedEmblem\emblem-silver.png" />
+    <None Remove="Assets\rankedEmblem\wings\wings_diamond.png" />
+    <None Remove="Assets\upper.png" />
+    <None Remove="Assets\wpfui-icon-256.png" />
+    <None Remove="Assets\wpfui-icon-1024.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\588.png" />
+    <Resource Include="Assets\background.png" />
+    <Resource Include="Assets\Banners\bronze_banner.png" />
+    <Resource Include="Assets\Banners\challenger_banner.png" />
+    <Resource Include="Assets\Banners\diamond_banner.png" />
+    <Resource Include="Assets\Banners\diamond_banner2.png" />
+    <Resource Include="Assets\Banners\diamond_banner3.png" />
+    <Resource Include="Assets\Banners\emerald_banner.png" />
+    <Resource Include="Assets\Banners\gold_banner.png" />
+    <Resource Include="Assets\Banners\grandmaster_banner.png" />
+    <Resource Include="Assets\Banners\iron_banner.png" />
+    <Resource Include="Assets\Banners\master_banner.png" />
+    <Resource Include="Assets\Banners\platinum_banner.png" />
+    <Resource Include="Assets\Banners\silver_banner.png" />
+    <Resource Include="Assets\Banners\unranked_banner.png" />
+    <Resource Include="Assets\Border.png" />
+    <Resource Include="Assets\Kindred_1.jpg" />
+    <Resource Include="Assets\rankedEmblem\emblem-bronze.png" />
+    <Resource Include="Assets\rankedEmblem\emblem-challenger.png" />
+    <Resource Include="Assets\rankedEmblem\emblem-diamond.png" />
+    <Resource Include="Assets\rankedEmblem\emblem-gold.png" />
+    <Resource Include="Assets\rankedEmblem\emblem-grandmaster.png" />
+    <Resource Include="Assets\rankedEmblem\emblem-iron.png" />
+    <Resource Include="Assets\rankedEmblem\emblem-master.png" />
+    <Resource Include="Assets\rankedEmblem\emblem-platinum.png" />
+    <Resource Include="Assets\rankedEmblem\emblem-silver.png" />
+    <Resource Include="Assets\rankedEmblem\wings\wings_diamond.png" />
+    <Resource Include="Assets\upper.png" />
+    <Resource Include="Assets\wpfui-icon-256.png" />
+    <Resource Include="Assets\wpfui-icon-1024.png" />
+  </ItemGroup>
+
+</Project>

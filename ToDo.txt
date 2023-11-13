@@ -1,0 +1,2 @@
+﻿1. Rangi są źle pobierane
+2. Avg tier jest źle liczony
