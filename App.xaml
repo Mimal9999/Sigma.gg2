@@ -10,6 +10,16 @@
         <ResourceDictionary>
             <SolidColorBrush x:Key="MainWindowBackgroudBrush"
                    Color="Orange" />
+            <SolidColorBrush x:Key="WinColor"
+                    Color="#5460FD" />
+            <SolidColorBrush x:Key="LoseColor"
+                    Color="#FD5471" />
+            <SolidColorBrush x:Key="MvpColor"
+                    Color="Orange" />
+            <SolidColorBrush x:Key="AceColor"
+                    Color="Magenta" />
+            <SolidColorBrush x:Key="OtherColor"
+                    Color="DimGray" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />

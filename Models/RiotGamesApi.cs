@@ -130,7 +130,7 @@ namespace Sigma.gg.Models
             }
             if(!end.HasValue)
             {
-                end = 20;
+                end = 10;
             }
             try
             {

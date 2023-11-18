@@ -15,6 +15,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Runtime;
+using System.Runtime.Caching;
 
 namespace Sigma.gg.Helpers
 {
@@ -24,9 +26,13 @@ namespace Sigma.gg.Helpers
         public static string version { get; set; }
         public static string summonerMe { get; set; }
         public static Dictionary<string, BitmapImage> storedImages = new Dictionary<string, BitmapImage>();
+        private static readonly ObjectCache memoryCache = MemoryCache.Default;
         public static async Task StoreImages()
         {
-
+            DownloadChampionsImages();
+            DownloadItemsImages();
+            DownloadSummonerSpellsImages();
+            DownloadRunesImages();
         }
         private static async Task DownloadItemsImages()
         {
@@ -69,7 +75,7 @@ namespace Sigma.gg.Helpers
                 try
                 {
                     var item = await client.GetByteArrayAsync($"https://ddragon.leagueoflegends.com/cdn/{Globals.version}/img/item/{itemId}.png");
-                    File.WriteAllBytes(Path.Combine(path, $"{itemId}.png"), item);
+                    File.WriteAllBytes(Path.Combine(path, $"I{itemId}.png"), item);
                 }
                 catch (Exception ex)
                 {
@@ -97,7 +103,7 @@ namespace Sigma.gg.Helpers
                 int spellId = (int)item;
                 string summonerSpellName = Enum.GetName(typeof(SummonerSpellEnum), spellId);
                 var summonerSpellImage = await client.GetByteArrayAsync($"https://ddragon.leagueoflegends.com/cdn/{Globals.version}/img/spell/{summonerSpellName}.png");
-                File.WriteAllBytes(Path.Combine(path, $"{spellId}.png"), summonerSpellImage);
+                File.WriteAllBytes(Path.Combine(path, $"S{spellId}.png"), summonerSpellImage);
 
             }
         }
@@ -121,7 +127,7 @@ namespace Sigma.gg.Helpers
             foreach (var champion in champions)
             {
                 var championImage = await client.GetByteArrayAsync($"http://ddragon.leagueoflegends.com/cdn/{Globals.version}/img/champion/{champion.Image.Full}");
-                File.WriteAllBytes(Path.Combine(path, $"{champion.Key}.png"), championImage);
+                File.WriteAllBytes(Path.Combine(path, $"C{champion.Key}.png"), championImage);
             }
         }
         static List<ChampionInfo> ExtractChampionInfo(string jsonResponse)
@@ -170,31 +176,40 @@ namespace Sigma.gg.Helpers
             foreach (var item5 in rune)
             {
                 var tempImage = await client.GetByteArrayAsync($"https://ddragon.canisback.com/img/{item5.icon}");
-                File.WriteAllBytes(Path.Combine(path, $"{item5.id}.png"), tempImage);
+                File.WriteAllBytes(Path.Combine(path, $"R{item5.id}.png"), tempImage);
                 foreach (var slot in item5.slots)
                 {
                     foreach (var runeItem in slot.runes)
                     {
                         var tempImage2 = await client.GetByteArrayAsync($"https://ddragon.canisback.com/img/{runeItem.icon}");
-                        File.WriteAllBytes(Path.Combine(path, $"{runeItem.id}.png"), tempImage2);
+                        File.WriteAllBytes(Path.Combine(path, $"R{runeItem.id}.png"), tempImage2);
                     }
                 }
             }
         }
         public static BitmapImage GetImageFromFile(string path, string fileName)
         {
-            if (storedImages.ContainsKey(fileName))
+            if (memoryCache.Contains(fileName) && memoryCache[fileName] is BitmapImage cachedImage)
             {
-                return storedImages[fileName];
+                return cachedImage;
             }
+
             string tempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-            string finalPant = $"{tempPath}\\{fileName}";
-            var image = new BitmapImage(new Uri(finalPant, UriKind.Absolute));
-            image.DecodePixelHeight = 35;
-            image.DecodePixelWidth = 35;
-            image.CacheOption = BitmapCacheOption.OnLoad;
+            string finalPath = Path.Combine(tempPath, fileName);
+
+            var image = new BitmapImage(new Uri(finalPath, UriKind.Absolute))
+            {
+                DecodePixelHeight = 35,
+                DecodePixelWidth = 35,
+                CacheOption = BitmapCacheOption.OnLoad
+            };
+
             image.Freeze();
-            storedImages[fileName] = image;
+            memoryCache.Set(fileName, image, new CacheItemPolicy
+            {
+                AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30) // Ustaw, ile czasu obraz ma pozostać w pamięci
+            });
+
             return image;
         }
 

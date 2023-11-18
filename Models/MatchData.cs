@@ -8,11 +8,14 @@ using Sigma.gg.Enums;
 using System.ComponentModel;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using System.Globalization;
+using System.Windows.Media;
 
 namespace Sigma.gg.Models
 {
     public class MatchData : INotifyPropertyChanged
     {
+        
         public string queueName { get; set; }
         public string queueMap { get; set; }
         public string gameDuration { get; set; }
@@ -37,7 +40,7 @@ namespace Sigma.gg.Models
         public int deaths { get; set; }
         public int assists { get; set; }
         public string parsedKda { get; set; }
-        public double kda { get; set; }
+        public string kda { get; set; }
         public int level { get; set; }
         public string controlWards { get; set; }
         public Participant me { get; set; }
@@ -90,11 +93,13 @@ namespace Sigma.gg.Models
             await SetRanks();
             SetCsPerMin(match.info.gameDuration);
             //victory = match.info.
+            SetParsedDamage();
+            SetKda();
             MVPScore();
             SetRunesImages();
             SetItemsImages();
             SetChampionIcons();
-            SetSummonerSpellsIcons();
+            SetSummonerSpellsIcons();            
             SetSefl();
         }
         /// <summary>
@@ -180,7 +185,8 @@ namespace Sigma.gg.Models
         private int CountTotalTeamKills(int team)
         {
             var teamParticipants = team == 1 ? participantsTeam1 : participantsTeam2;
-            return teamParticipants.Sum(p => p.kills);
+            var temp = teamParticipants.Sum(p => p.kills);
+            return temp;
         }
         /// <summary>
         /// Calculates and sets the kill participation (P/Kill) for each participant in the match data.
@@ -197,9 +203,10 @@ namespace Sigma.gg.Models
 
             foreach (Participant p in participantsTeam1.Concat(participantsTeam2))
             {
-                var teamKills = p.teamId == 1 ? team1Kills : team2Kills;
+                var teamKills = p.teamId == 100 ? team1Kills : team2Kills;
                 double killP = ((double)p.kills + (double)p.assists) / teamKills;
                 p.killParticipation = "P/Kill " + ((int)(killP * 100)).ToString() + "%";
+                p.killParticipationDouble = killP;
             }
             stopwatch.Stop();
             Debug.WriteLine($"SetPKill method took: {stopwatch.Elapsed}");
@@ -212,34 +219,40 @@ namespace Sigma.gg.Models
         /// </summary>
         private async Task SetRanks()
         {
+            SemaphoreSlim semaphore = new SemaphoreSlim(20); // Ustaw maksymalną liczbę równoczesnych żądań (5 w tym przykładzie)
+
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            HttpClient client = new HttpClient();
+
+            HttpClient client = new HttpClient();            
             var tasks = participants.Select(async p =>
             {
-                var response = await client.GetAsync($"https://eun1.api.riotgames.com/lol/league/v4/entries/by-summoner/{p.summonerId}?api_key={Globals.apiKey}");
-                var result = await response.Content.ReadAsStringAsync();
+                await semaphore.WaitAsync(); // Czekaj, aż semafor pozwoli na wykonanie żądania
 
-                if (result == "[]")
+                try
                 {
-                    p.rank = "Unranked 0";
-                }
-                else
-                {
-                    try
+                    var response = await client.GetStringAsync($"https://eun1.api.riotgames.com/lol/league/v4/entries/by-summoner/{p.summonerId}?api_key={Globals.apiKey}");
+
+                    if (response == "[]")
                     {
-                        List<Ranks> rank = JsonConvert.DeserializeObject<List<Ranks>>(result);
-                        p.rank = GetHigherRank(rank);
+                        p.rank = "Unranked 0";
                     }
-                    catch (Exception)
+                    else
                     {
-                        /*Ranks rank = JsonConvert.DeserializeObject<Ranks>(result);
-                        List<Ranks> rnk = new List<Ranks>
+                        try
                         {
-                            rank
-                        };*/
-                        p.rank = "Unranked 0"; //do naprawienia
+                            List<Ranks> rank = JsonConvert.DeserializeObject<List<Ranks>>(response);
+                            p.rank = GetHigherRank(rank);
+                        }
+                        catch (Exception)
+                        {
+                            p.rank = "Unranked 0";
+                        }
                     }
+                }
+                finally
+                {
+                    semaphore.Release(); // Zwolnij semafor po zakończeniu żądania
                 }
             });
 
@@ -340,67 +353,79 @@ namespace Sigma.gg.Models
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            if (participants[0].challenges != null)
+            
+            var participantWithHighestKDA = participants.OrderByDescending(p => p.kdaDouble);
+            for (int i = participantWithHighestKDA.Count() - 1; i >= 0; i--)
             {
-                var participantWithHighestKDA = participants.OrderByDescending(p => p.challenges.kda);
-                for (int i = participantWithHighestKDA.Count() - 1; i >= 0; i--)
+                participantWithHighestKDA.ElementAt(9 - i).mvpScore += i;
+            }
+            var participantWithHighestKillParticipation = participants.OrderByDescending(p => p.killParticipationDouble);
+            for (int i = participantWithHighestKillParticipation.Count() - 1; i >= 0; i--)
+            {
+                participantWithHighestKillParticipation.ElementAt(9 - i).mvpScore += i;
+            }
+            var participantWithHighestDamage = participants.OrderByDescending(p => p.totalDamageDealtToChampions);
+            for (int i = participantWithHighestDamage.Count() - 1; i >= 0; i--)
+            {
+                participantWithHighestDamage.ElementAt(9 - i).mvpScore += i;
+            }
+            var participantWithHighestGold = participants.OrderByDescending(p => p.goldEarned);
+            for (int i = participantWithHighestGold.Count() - 1; i >= 0; i--)
+            {
+                participantWithHighestGold.ElementAt(9 - i).mvpScore += i;
+            }
+            var participantWithHighestVisionScore = participants.OrderByDescending(p => p.visionScore);
+            for (int i = participantWithHighestVisionScore.Count() - 1; i >= 0; i--)
+            {
+                participantWithHighestVisionScore.ElementAt(9 - i).mvpScore += i;
+            }
+            var participantWithHighestTotalCs = participants.OrderByDescending(p => p.totalCs);
+            for (int i = participantWithHighestTotalCs.Count() - 1; i >= 0; i--)
+            {
+                participantWithHighestTotalCs.ElementAt(9 - i).mvpScore += i;
+            }
+            var bestParticipant = participants.OrderByDescending(p => p.mvpScore);
+            List<Participant> bestParticipantsTeam1 = new List<Participant>();
+            List<Participant> bestParticipantsTeam2 = new List<Participant>();
+            for (int i = bestParticipant.Count() - 1; i >= 0; i--)
+            {
+                if (bestParticipant.ElementAt(9 - i).win == true)
                 {
-                    participantWithHighestKDA.ElementAt(9 - i).mvpScore += i;
+                    bestParticipantsTeam1.Add(bestParticipant.ElementAt(9 - i));                                        
+                    //bestParticipant.ElementAt(9-i).winColor = winBrush;
                 }
-                var participantWithHighestKillParticipation = participants.OrderByDescending(p => p.challenges.killParticipation);
-                for (int i = participantWithHighestKillParticipation.Count() - 1; i >= 0; i--)
+                else
                 {
-                    participantWithHighestKillParticipation.ElementAt(9 - i).mvpScore += i;
+                    bestParticipantsTeam2.Add(bestParticipant.ElementAt(9 - i));
+                    //bestParticipant.ElementAt(9-i).winColor = loseBrush;
                 }
-                var participantWithHighestDamage = participants.OrderByDescending(p => p.totalDamageDealtToChampions);
-                for (int i = participantWithHighestDamage.Count() - 1; i >= 0; i--)
+            }
+            bestParticipantsTeam1.ElementAt(0).mvpScoreString = "MVP";
+            //bestParticipantsTeam1.ElementAt(0).mvpColor = mvpBrush;
+            bestParticipantsTeam2.ElementAt(0).mvpScoreString = "ACE";
+            //bestParticipantsTeam2.ElementAt(0).mvpColor = aceBrush;
+
+            for (int i = bestParticipant.Count() - 1; i >= 0; i--)
+            {
+                if (bestParticipant.ElementAt(9 - i).mvpScoreString == null)
                 {
-                    participantWithHighestDamage.ElementAt(9 - i).mvpScore += i;
-                }
-                var participantWithHighestGold = participants.OrderByDescending(p => p.goldEarned);
-                for (int i = participantWithHighestGold.Count() - 1; i >= 0; i--)
-                {
-                    participantWithHighestGold.ElementAt(9 - i).mvpScore += i;
-                }
-                var participantWithHighestVisionScore = participants.OrderByDescending(p => p.visionScore);
-                for (int i = participantWithHighestVisionScore.Count() - 1; i >= 0; i--)
-                {
-                    participantWithHighestVisionScore.ElementAt(9 - i).mvpScore += i;
-                }
-                var participantWithHighestTotalCs = participants.OrderByDescending(p => p.totalCs);
-                for (int i = participantWithHighestTotalCs.Count() - 1; i >= 0; i--)
-                {
-                    participantWithHighestTotalCs.ElementAt(9 - i).mvpScore += i;
-                }
-                var bestParticipant = participants.OrderByDescending(p => p.mvpScore);
-                List<Participant> bestParticipantsTeam1 = new List<Participant>();
-                List<Participant> bestParticipantsTeam2 = new List<Participant>();
-                for (int i = bestParticipant.Count() - 1; i >= 0; i--)
-                {
-                    if (bestParticipant.ElementAt(9 - i).win == true)
+                    if (9 - i + 2 == 3)
                     {
-                        bestParticipantsTeam1.Add(bestParticipant.ElementAt(9 - i));
+                        bestParticipant.ElementAt(9 - i).mvpScoreString = (9 - i + 2).ToString() + "rd";
+                        //bestParticipant.ElementAt(9 - i).mvpColor = otherBrush;
                     }
                     else
                     {
-                        bestParticipantsTeam2.Add(bestParticipant.ElementAt(9 - i));
-                    }
-                }
-                bestParticipantsTeam1.ElementAt(0).mvpScoreString = "MVP";
-                bestParticipantsTeam2.ElementAt(0).mvpScoreString = "ACE";
-
-                for (int i = bestParticipant.Count() - 1; i >= 0; i--)
-                {
-                    if (bestParticipant.ElementAt(9 - i).mvpScoreString == null)
-                    {
-                        bestParticipant.ElementAt(9 - i).mvpScoreString = (9 - i + 2).ToString();
-                    }
+                        bestParticipant.ElementAt(9 - i).mvpScoreString = (9 - i + 2).ToString() + "th";
+                        //bestParticipant.ElementAt(9 - i).mvpColor = otherBrush;
+                    }    
                 }
             }
+            
             stopwatch.Stop();
             Debug.WriteLine($"MVPScore method took: {stopwatch.Elapsed}");
             
-        }
+        }        
         /// <summary>
         /// Retrieves and sets personal statistics for the current user in the match data.
         /// </summary>
@@ -413,12 +438,7 @@ namespace Sigma.gg.Models
             {
                 kills = me.kills;
                 deaths = me.deaths;
-                assists = me.assists;
-                if (me.challenges != null)
-                {
-                    parsedKda = me.challenges.kda.ToString("0.0");
-                    kda = me.challenges.kda;
-                }
+                assists = me.assists;                
                 level = me.champLevel;
                 championName = me.championName;
                 championId = me.championId;
@@ -514,8 +534,8 @@ namespace Sigma.gg.Models
             stopwatch.Start();
             foreach (var p in participants)
             {
-                string filename1 = p.perks.styles[0].selections[0].perk.ToString() + ".png";
-                string filename2 = p.perks.styles[1].style.ToString() + ".png";
+                string filename1 = "R"+p.perks.styles[0].selections[0].perk.ToString() + ".png";
+                string filename2 = "R"+p.perks.styles[1].style.ToString() + ".png";
                 p.primaryRuneImage = Globals.GetImageFromFile(@"Assets\Images\Runes", filename1);
                 p.secondaryRuneImage = Globals.GetImageFromFile(@"Assets\Images\Runes", filename2);
             }
@@ -554,13 +574,13 @@ namespace Sigma.gg.Models
             {
                 List<BitmapImage> itemsImages = new List<BitmapImage>
                 {
-                    p.item0 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", p.item0.ToString() + ".png") : null,
-                    p.item1 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", p.item1.ToString() + ".png") : null,
-                    p.item2 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", p.item2.ToString() + ".png") : null,
-                    p.item3 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", p.item3.ToString() + ".png") : null,
-                    p.item4 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", p.item4.ToString() + ".png") : null,
-                    p.item5 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", p.item5.ToString() + ".png") : null,
-                    p.item6 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", p.item6.ToString() + ".png") : null
+                    p.item0 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item0.ToString() + ".png") : null,
+                    p.item1 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item1.ToString() + ".png") : null,
+                    p.item2 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item2.ToString() + ".png") : null,
+                    p.item3 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item3.ToString() + ".png") : null,
+                    p.item4 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item4.ToString() + ".png") : null,
+                    p.item5 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item5.ToString() + ".png") : null,
+                    p.item6 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item6.ToString() + ".png") : null
                 };
                 p.itemsImages = itemsImages;
             }
@@ -573,7 +593,7 @@ namespace Sigma.gg.Models
             stopwatch.Start();
             foreach (var p in participants)
             {
-                string filename = p.championId.ToString() + ".png";
+                string filename = "C" + p.championId.ToString() + ".png";
                 p.championImage = Globals.GetImageFromFile(@"Assets\Images\Champions", filename);
             }
             stopwatch.Stop();
@@ -585,13 +605,47 @@ namespace Sigma.gg.Models
             stopwatch.Start();
             foreach (var p in participants)
             {
-                string filename1 = p.summoner1Id + ".png";
-                string filename2 = p.summoner2Id + ".png";
+                string filename1 = "S" + p.summoner1Id + ".png";
+                string filename2 = "S" + p.summoner2Id + ".png";
                 p.summoner1Image = Globals.GetImageFromFile(@"Assets\Images\SummonerSpells", filename1);
                 p.summoner2Image = Globals.GetImageFromFile(@"Assets\Images\SummonerSpells", filename2);
             }
             stopwatch.Stop();
             Debug.WriteLine($"SetSummonerSpellsIcons method took: {stopwatch.Elapsed}");
+        }
+        private void SetParsedDamage()
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            foreach (var p in participants)
+            {
+                p.damageDealtParsed = $"D: {p.totalDamageDealtToChampions}";
+                p.damageTakenParsed = $"T: {p.totalDamageTaken}";
+            }
+            stopwatch.Stop();
+            Debug.WriteLine($"SetParsedDamage method took: {stopwatch.Elapsed}");
+        }
+        private void SetKda()
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            foreach (var p in participants)
+            {
+                p.kda = $"{p.kills}/{p.deaths}/{p.assists}";
+                if(p.deaths == 0)
+                {
+                    p.kdaDouble = 1000;
+                    p.kdaString = "Perfect KDA";
+                }
+                else
+                {
+                    double kda = (double)(p.kills + p.assists) / p.deaths;
+                    p.kdaString = kda.ToString("0.00", CultureInfo.GetCultureInfo("en-GB")) + " KDA";
+                    p.kdaDouble = kda;
+                }            
+            }
+            stopwatch.Stop();
+            Debug.WriteLine($"SetKda method took: {stopwatch.Elapsed}");
         }
     }   
 }

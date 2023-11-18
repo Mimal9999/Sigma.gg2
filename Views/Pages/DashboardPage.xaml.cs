@@ -41,7 +41,8 @@ namespace Sigma.gg.Views.Pages
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
             await Task.Run(async () => await ViewModel.LoadMatches());
-            RefreshScreen();
+            matchList.ItemsSource = ViewModel.SummonerMatchesView;
+            //RefreshScreen();
         }
         
 

@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Sigma.gg.Models;
@@ -181,6 +182,8 @@ public class Participant
     public BitmapImage championImage { get; set; }
     public string championName { get; set; }
     
+    public string damageDealtParsed { get; set; }
+    public string damageTakenParsed { get; set; }
     public int damageDealtToBuildings { get; set; }
     public int damageDealtToObjectives { get; set; }
     public int damageDealtToTurrets { get; set; }
@@ -211,6 +214,9 @@ public class Participant
     public int item6 { get; set; }
     public List<BitmapImage> itemsImages { get; set; }
     public int itemsPurchased { get; set; }
+    public string kda { get; set; }
+    public double kdaDouble { get; set; }
+    public string kdaString { get; set; }
     public int killingSprees { get; set; }
     public int kills { get; set; }
     public string lane { get; set; }
@@ -292,6 +298,7 @@ public class Participant
     public int wardsPlaced { get; set; }
     public bool win { get; set; }
     public string killParticipation { get; set; }
+    public double killParticipationDouble { get; set; }
     public string rank { get; set; }
     public string csPerMin { get; set; }
     public int totalCs { get; set; }

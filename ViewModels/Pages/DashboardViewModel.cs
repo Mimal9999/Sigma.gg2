@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows.Data;
 using System.Windows.Input;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Dpi;
@@ -21,15 +22,23 @@ namespace Sigma.gg.ViewModels.Pages
 {
     public partial class DashboardViewModel : ObservableObject
     {
-        public ObservableCollection<MatchData> SummonerMatches = new ObservableCollection<MatchData>();   
-        
+        public ObservableCollection<MatchData> SummonerMatches = new ObservableCollection<MatchData>();
+
+        private ICollectionView _summonerMatchesView;
+
+        public ICollectionView SummonerMatchesView
+        {
+            get { return _summonerMatchesView; }
+        }
+
         RiotGamesApi api = new RiotGamesApi();
 
         public async Task LoadMatches()
         {  
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            List<string> sMatches = new List<string>();
+            List<string> sMatches;
+            IList<MatchData> matchDatas = new List<MatchData>();
             var result = await api.GetMatches(RiotSharp.Misc.Region.Europe, "cnFwOQeLFjTLgT3h_2AwSrhOaGXwy-1Fb24acmAeGURdb1OipUbCf6GheEwujQKd5uWVu6h25yF3bw", null, null, Globals.apiKey);
             sMatches = result;
 
@@ -41,7 +50,9 @@ namespace Sigma.gg.ViewModels.Pages
                     var matchData = new MatchData();
                     await matchData.GetMatchDetails(match);
                     SummonerMatches.Add(matchData);
+                    matchDatas.Add(matchData);
                 }
+                _summonerMatchesView = CollectionViewSource.GetDefaultView(SummonerMatches);
             }
             stopwatch.Stop();
             Debug.WriteLine("Time elapsed: {0}", stopwatch.Elapsed); //3 min
