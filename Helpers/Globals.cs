@@ -25,6 +25,7 @@ namespace Sigma.gg.Helpers
         public static string apiKey { get; set; }
         public static string version { get; set; }
         public static string summonerMe { get; set; }
+        public static Summoner MeSummoner { get; set; }
         public static Dictionary<string, BitmapImage> storedImages = new Dictionary<string, BitmapImage>();
         private static readonly ObjectCache memoryCache = MemoryCache.Default;
         public static async Task StoreImages()

@@ -25,12 +25,25 @@ namespace Sigma.gg.Models
         {
             api = RiotApi.GetDevelopmentInstance(Globals.apiKey);
         }
-        public async Task<string> GetSummonerPuuidByName(string summonerName) 
+        public async Task<string> GetSummonerPuuidByName(string summonerName, Region region) 
         {
             try
             {
-                var summoner = await api.Summoner.GetSummonerByNameAsync(Region.Eune, summonerName);
+                var summoner = await api.Summoner.GetSummonerByNameAsync(region, summonerName);
                 return summoner.Puuid;
+            }
+            catch (RiotSharpException ex)
+            {
+                // Handle the exception however you want.
+                return null;
+            }
+        }
+        public async Task<RiotSharp.Endpoints.SummonerEndpoint.Summoner> GetSummonerEntriesByName(string summonerName, Region region)
+        {
+            try
+            {
+                var summoner = await api.Summoner.GetSummonerByNameAsync(region, summonerName);
+                return summoner;
             }
             catch (RiotSharpException ex)
             {
@@ -122,16 +135,8 @@ namespace Sigma.gg.Models
             }
         }
 
-        public async Task<List<string>> GetMatches(Region region ,string puuid, int? start, int? end, string apiKey)
+        public async Task<List<string>> GetMatches(Region region ,string puuid, string apiKey, int start = 0, int end = 10)
         {
-            if(!start.HasValue)
-            {
-                start = 0;
-            }
-            if(!end.HasValue)
-            {
-                end = 10;
-            }
             try
             {
                 using var client = new HttpClient();

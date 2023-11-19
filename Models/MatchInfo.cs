@@ -1,6 +1,7 @@
 ﻿// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
 
 using Newtonsoft.Json;
+using RiotSharp.Misc;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -366,9 +367,24 @@ public class Summoner
     public string? accountId { get; set; }
     public string? puuid { get; set; }
     public string? name { get; set; }
-    public int? profileIconId { get; set; }
-    public long? revisionDate { get; set; }
-    public int? summonerLevel { get; set; }
+    public int profileIconId { get; set; }
+    public DateTime revisionDate { get; set; }
+    public long summonerLevel { get; set; }
+    public Ranks soloRank { get; set; }
+    public Ranks flexRank { get; set; }
+    public RiotSharp.Misc.Region region { get; set; }
+    public int LoadedMatches { get; set; }   
+    public int Remakes { get; set; }
+    public int SoloWr { get; set; }
+    public int FlexWr { get; set; }
+    public long LadderRank { get; set; }
+    public double LadderTop { get; set; }
+    public int TopPlayed { get; set; }
+    public int JunglePlayed { get; set; }
+    public int MidPlayed { get; set; }
+    public int AdcPlayed { get; set; }
+    public int SupportPlayed { get; set; }
+    public Dictionary<string, int> ChampionsPlayed { get; set; }
 }
 public class Mastery
 {

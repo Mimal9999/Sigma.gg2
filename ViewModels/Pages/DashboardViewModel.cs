@@ -3,20 +3,12 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
-using RiotSharp.Endpoints.MatchEndpoint;
-using Sigma.gg.Enums;
 using Sigma.gg.Helpers;
 using Sigma.gg.Models;
-using Sigma.gg.ViewModels.Windows;
-using Sigma.gg.Views.Pages;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Data;
-using System.Windows.Input;
-using Wpf.Ui.Controls;
-using Wpf.Ui.Dpi;
 
 namespace Sigma.gg.ViewModels.Pages
 {
@@ -39,7 +31,7 @@ namespace Sigma.gg.ViewModels.Pages
             stopwatch.Start();
             List<string> sMatches;
             IList<MatchData> matchDatas = new List<MatchData>();
-            var result = await api.GetMatches(RiotSharp.Misc.Region.Europe, "cnFwOQeLFjTLgT3h_2AwSrhOaGXwy-1Fb24acmAeGURdb1OipUbCf6GheEwujQKd5uWVu6h25yF3bw", null, null, Globals.apiKey);
+            var result = await api.GetMatches(RiotSharp.Misc.Region.Europe, "cnFwOQeLFjTLgT3h_2AwSrhOaGXwy-1Fb24acmAeGURdb1OipUbCf6GheEwujQKd5uWVu6h25yF3bw", Globals.apiKey);
             sMatches = result;
 
             if (sMatches.Count > 0)
@@ -55,7 +47,7 @@ namespace Sigma.gg.ViewModels.Pages
                 _summonerMatchesView = CollectionViewSource.GetDefaultView(SummonerMatches);
             }
             stopwatch.Stop();
-            Debug.WriteLine("Time elapsed: {0}", stopwatch.Elapsed); //3 min
+            Debug.WriteLine("Time elapsed: {0}", stopwatch.Elapsed);
         }
 
     }

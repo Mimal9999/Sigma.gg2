@@ -16,7 +16,7 @@ namespace Sigma.gg.Views.Windows
     public partial class MainWindow
     {
         public MainWindowViewModel ViewModel { get; }
-
+        RiotGamesApi api;
         public MainWindow(
             MainWindowViewModel viewModel,
             INavigationService navigationService,
@@ -31,8 +31,8 @@ namespace Sigma.gg.Views.Windows
             DataContext = this;
 
             InitializeComponent();
-            Globals.apiKey = "RGAPI-6a967526-82e6-4252-91fa-9a317fa104ae";
-            RiotGamesApi api = new RiotGamesApi();
+            Globals.apiKey = "";
+            api = new RiotGamesApi();
             Globals.version = api.GetLatestVersion();
 
             navigationService.SetNavigationControl(NavigationView);
@@ -44,9 +44,32 @@ namespace Sigma.gg.Views.Windows
 
         private void FluentWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            //ImageBrush splash = new ImageBrush();
-            //splash.ImageSource = new BitmapImage(new Uri($"https://cdn.communitydragon.org/13.20.1/champion/Kindred/splash-art/skin/1", UriKind.Absolute));
-            //this.Background = splash;
+            RegionComboBox.ItemsSource = Enum.GetValues(typeof(RiotSharp.Misc.Region));
+        }
+
+        private async void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(!string.IsNullOrEmpty(SummonerNameTextBox.Text) && RegionComboBox.SelectedItem != null)
+            {
+                Summoner sm = new Summoner();
+                
+                sm.name = SummonerNameTextBox.Text;
+                string reg = RegionComboBox.SelectedItem.ToString();
+                sm.region = (RiotSharp.Misc.Region)Enum.Parse(typeof(RiotSharp.Misc.Region), reg);
+                //^values taken from user^ 
+
+                var apiSummoner = await api.GetSummonerEntriesByName(sm.name, sm.region);
+                sm.puuid = apiSummoner.Puuid;
+                sm.id = apiSummoner.Id;
+                sm.profileIconId = apiSummoner.ProfileIconId;
+                sm.summonerLevel = apiSummoner.Level;
+                sm.revisionDate = apiSummoner.RevisionDate;
+                sm.accountId = apiSummoner.AccountId;
+                //^values taken from api^
+
+                Globals.MeSummoner = sm;
+                
+            }
         }
     }
 }

@@ -81,25 +81,17 @@ namespace Sigma.gg.Models
 
         private async Task GetMatchDetails(Root match)
         {
-            participants = match.info.participants;
-            RecalculateCS();
+            participants = match.info.participants;            
             queueName = GetQueueName(match.info.queueId);
             queueMap = GetQueueMap(match.info.queueId);
             gameDuration = ParseGameDuration(match.info.gameDuration);
             gameEnd = match.info.gameEndTimestamp;
             gameEndString = TimeAgoFromUnixTimestamp(gameEnd);
             SetTeams();
-            SetPKill();
+            SetParticipantInfo(match);
             await SetRanks();
-            SetCsPerMin(match.info.gameDuration);
-            //victory = match.info.
-            SetParsedDamage();
-            SetKda();
-            MVPScore();
-            SetRunesImages();
-            SetItemsImages();
-            SetChampionIcons();
-            SetSummonerSpellsIcons();            
+            //victory = match.info.           
+            MVPScore();                     
             SetSefl();
         }
         /// <summary>
@@ -194,22 +186,15 @@ namespace Sigma.gg.Models
         /// of each participant by considering their kills and assists relative to their team's total kills.
         /// The result is stored in the "killParticipation" property for each participant.
         /// </summary>
-        private void SetPKill()
-        {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
+        private void SetPKill(Participant p)
+        {            
             int team1Kills = CountTotalTeamKills(1);
             int team2Kills = CountTotalTeamKills(2);
-
-            foreach (Participant p in participantsTeam1.Concat(participantsTeam2))
-            {
-                var teamKills = p.teamId == 100 ? team1Kills : team2Kills;
-                double killP = ((double)p.kills + (double)p.assists) / teamKills;
-                p.killParticipation = "P/Kill " + ((int)(killP * 100)).ToString() + "%";
-                p.killParticipationDouble = killP;
-            }
-            stopwatch.Stop();
-            Debug.WriteLine($"SetPKill method took: {stopwatch.Elapsed}");
+            
+            var teamKills = p.teamId == 100 ? team1Kills : team2Kills;
+            double killP = ((double)p.kills + (double)p.assists) / teamKills;
+            p.killParticipation = "P/Kill " + ((int)(killP * 100)).ToString() + "%";
+            p.killParticipationDouble = killP;                        
         }
         /// <summary>
         /// Asynchronously retrieves and sets the ranks for each participant in the match data.
@@ -317,32 +302,18 @@ namespace Sigma.gg.Models
         /// The result is then formatted into a string and assigned to the participant.
         /// </summary>
         /// <param name="duration">The match duration in seconds.</param>
-        private void SetCsPerMin(int duration)
-        {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            double gameDuration = duration / 60.0;
-            foreach (Participant p in participants)
-            {
-                p.csPerMin = (p.totalCs / gameDuration).ToString("0.0") + "/m";
-            }
-            stopwatch.Stop();
-            Debug.WriteLine($"SetCsPerMin method took: {stopwatch.Elapsed}");
+        private void SetCsPerMin(int duration, Participant p)
+        {           
+            double gameDuration = duration / 60.0;            
+            p.csPerMin = (p.totalCs / gameDuration).ToString("0.0") + "/m";            
         }
         /// <summary>
         /// Recalculates the total creep score (CS) for each participant.
         /// It adds the total minion kills and neutral minion kills to determine the new total CS value.
         /// </summary>
-        private void RecalculateCS()
+        private void RecalculateCS(Participant p)
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            foreach (Participant p in participants)
-            {
-                p.totalCs = p.totalMinionsKilled + p.neutralMinionsKilled;
-            }
-            stopwatch.Stop();
-            Debug.WriteLine($"RecalculateCS method took: {stopwatch.Elapsed}");
+            p.totalCs = p.totalMinionsKilled + p.neutralMinionsKilled;
         }
         /// <summary>
         /// Calculates and assigns a score to each participant in the match based on multiple performance factors.
@@ -528,124 +499,77 @@ namespace Sigma.gg.Models
                 return $"{daysAgo} {(daysAgo == 1 ? "day" : "days")} ago";
             }
         }
-        private void SetRunesImages()
-        {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            foreach (var p in participants)
-            {
-                string filename1 = "R"+p.perks.styles[0].selections[0].perk.ToString() + ".png";
-                string filename2 = "R"+p.perks.styles[1].style.ToString() + ".png";
-                p.primaryRuneImage = Globals.GetImageFromFile(@"Assets\Images\Runes", filename1);
-                p.secondaryRuneImage = Globals.GetImageFromFile(@"Assets\Images\Runes", filename2);
-            }
-            stopwatch.Stop();
-            Debug.WriteLine($"SetRunesImages method took: {stopwatch.Elapsed}");
+        private void SetRunesImages(Participant p)
+        {           
+            string filename1 = "R"+p.perks.styles[0].selections[0].perk.ToString() + ".png";
+            string filename2 = "R"+p.perks.styles[1].style.ToString() + ".png";
+            p.primaryRuneImage = Globals.GetImageFromFile(@"Assets\Images\Runes", filename1);
+            p.secondaryRuneImage = Globals.GetImageFromFile(@"Assets\Images\Runes", filename2);            
         }
-        private void SetItemsImages()
-        {
-            /*var tasks = participants.Select(async p =>
+        private void SetItemsImages(Participant p)
+        {            
+            List<BitmapImage> itemsImages = new List<BitmapImage>
             {
-                var itemsImages = new List<BitmapImage>();
-
-                for (int i = 0; i <= 6; i++)
-                {
-                    string propertyName = $"item{i}";
-                    int itemValue = (int)p.GetType().GetProperty(propertyName).GetValue(p, null);
-
-                    if (Globals.itemImageCache.ContainsKey(itemValue))
-                    {
-                        itemsImages.Add(Globals.itemImageCache[itemValue]);
-                    }
-                    else
-                    {
-                        BitmapImage itemImage = await Globals.GetItemImage(itemValue);
-                        itemsImages.Add(itemImage);
-                    }
-                }
-
-                p.itemsImages = itemsImages;
-            });
-
-            await Task.WhenAll(tasks);*/
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            foreach (var p in participants)
-            {
-                List<BitmapImage> itemsImages = new List<BitmapImage>
-                {
-                    p.item0 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item0.ToString() + ".png") : null,
-                    p.item1 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item1.ToString() + ".png") : null,
-                    p.item2 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item2.ToString() + ".png") : null,
-                    p.item3 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item3.ToString() + ".png") : null,
-                    p.item4 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item4.ToString() + ".png") : null,
-                    p.item5 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item5.ToString() + ".png") : null,
-                    p.item6 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item6.ToString() + ".png") : null
-                };
-                p.itemsImages = itemsImages;
-            }
-            stopwatch.Stop();
-            Debug.WriteLine($"SetItemsImage method took: {stopwatch.Elapsed}");
+                p.item0 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item0.ToString() + ".png") : null,
+                p.item1 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item1.ToString() + ".png") : null,
+                p.item2 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item2.ToString() + ".png") : null,
+                p.item3 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item3.ToString() + ".png") : null,
+                p.item4 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item4.ToString() + ".png") : null,
+                p.item5 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item5.ToString() + ".png") : null,
+                p.item6 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item6.ToString() + ".png") : null
+            };
+            p.itemsImages = itemsImages;            
         }
-        private void SetChampionIcons()
-        {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            foreach (var p in participants)
-            {
-                string filename = "C" + p.championId.ToString() + ".png";
-                p.championImage = Globals.GetImageFromFile(@"Assets\Images\Champions", filename);
-            }
-            stopwatch.Stop();
-            Debug.WriteLine($"SetChampionsIcons method took: {stopwatch.Elapsed}");
+        private void SetChampionIcons(Participant p)
+        {            
+            string filename = "C" + p.championId.ToString() + ".png";
+            p.championImage = Globals.GetImageFromFile(@"Assets\Images\Champions", filename);            
         }
-        private void SetSummonerSpellsIcons()
-        {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            foreach (var p in participants)
-            {
-                string filename1 = "S" + p.summoner1Id + ".png";
-                string filename2 = "S" + p.summoner2Id + ".png";
-                p.summoner1Image = Globals.GetImageFromFile(@"Assets\Images\SummonerSpells", filename1);
-                p.summoner2Image = Globals.GetImageFromFile(@"Assets\Images\SummonerSpells", filename2);
-            }
-            stopwatch.Stop();
-            Debug.WriteLine($"SetSummonerSpellsIcons method took: {stopwatch.Elapsed}");
+        private void SetSummonerSpellsIcons(Participant p)
+        {            
+            string filename1 = "S" + p.summoner1Id + ".png";
+            string filename2 = "S" + p.summoner2Id + ".png";
+            p.summoner1Image = Globals.GetImageFromFile(@"Assets\Images\SummonerSpells", filename1);
+            p.summoner2Image = Globals.GetImageFromFile(@"Assets\Images\SummonerSpells", filename2);            
         }
-        private void SetParsedDamage()
-        {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            foreach (var p in participants)
-            {
-                p.damageDealtParsed = $"D: {p.totalDamageDealtToChampions}";
-                p.damageTakenParsed = $"T: {p.totalDamageTaken}";
-            }
-            stopwatch.Stop();
-            Debug.WriteLine($"SetParsedDamage method took: {stopwatch.Elapsed}");
+        private void SetParsedDamage(Participant p)
+        {           
+            p.damageDealtParsed = $"D: {p.totalDamageDealtToChampions}";
+            p.damageTakenParsed = $"T: {p.totalDamageTaken}";           
         }
-        private void SetKda()
+        private void SetKda(Participant p)
+        {            
+            p.kda = $"{p.kills}/{p.deaths}/{p.assists}";
+            if(p.deaths == 0)
+            {
+                p.kdaDouble = 1000;
+                p.kdaString = "Perfect KDA";
+            }
+            else
+            {
+                double kda = (double)(p.kills + p.assists) / p.deaths;
+                p.kdaString = kda.ToString("0.00", CultureInfo.GetCultureInfo("en-GB")) + " KDA";
+                p.kdaDouble = kda;
+            }                                  
+        }
+        private void SetParticipantInfo(Root match)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             foreach (var p in participants)
             {
-                p.kda = $"{p.kills}/{p.deaths}/{p.assists}";
-                if(p.deaths == 0)
-                {
-                    p.kdaDouble = 1000;
-                    p.kdaString = "Perfect KDA";
-                }
-                else
-                {
-                    double kda = (double)(p.kills + p.assists) / p.deaths;
-                    p.kdaString = kda.ToString("0.00", CultureInfo.GetCultureInfo("en-GB")) + " KDA";
-                    p.kdaDouble = kda;
-                }            
+                SetKda(p);
+                SetParsedDamage(p);
+                SetSummonerSpellsIcons(p);
+                SetChampionIcons(p);
+                SetItemsImages(p);
+                SetRunesImages(p);
+                RecalculateCS(p);
+                SetCsPerMin(match.info.gameDuration, p);
+                SetPKill(p);
             }
             stopwatch.Stop();
-            Debug.WriteLine($"SetKda method took: {stopwatch.Elapsed}");
+            Debug.WriteLine($"SetParticipantInfo method took: {stopwatch.Elapsed}");
         }
     }   
 }

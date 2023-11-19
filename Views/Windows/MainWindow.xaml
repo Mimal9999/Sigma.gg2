@@ -44,6 +44,11 @@
                 <Grid>
                     <ui:SnackbarPresenter x:Name="SnackbarPresenter">
                     </ui:SnackbarPresenter>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <ComboBox Height="35" Width="100" Margin="0,0,10,0" Name="RegionComboBox"/>
+                        <ui:TextBox Width="300" Height="35" TextWrapping="NoWrap" MaxLines="1" Margin="0,0,10,0" Name="SummonerNameTextBox"/>
+                        <ui:Button Content="Search" Height="35" Name="SearchButton" Click="SearchButton_Click"/>
+                    </StackPanel>
                 </Grid>
             </ui:NavigationView.ContentOverlay>
         </ui:NavigationView>
@@ -62,5 +67,6 @@
                 <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
             </ui:TitleBar.Icon>
         </ui:TitleBar>
+        
     </Grid>
 </ui:FluentWindow>
