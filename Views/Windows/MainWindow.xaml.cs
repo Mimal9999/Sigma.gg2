@@ -10,6 +10,8 @@ using System;
 using Wpf.Ui.Controls;
 using Sigma.gg.Helpers;
 using Sigma.gg.Models;
+using System.IO;
+using Sigma.gg.ViewModels.Pages;
 
 namespace Sigma.gg.Views.Windows
 {
@@ -44,7 +46,8 @@ namespace Sigma.gg.Views.Windows
 
         private void FluentWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            RegionComboBox.ItemsSource = Enum.GetValues(typeof(RiotSharp.Misc.Region));
+            RegionComboBox.ItemsSource = Globals.regionsDictionary.Keys;
+            RegionComboBox.SelectedItem = RiotSharp.Misc.Region.Eune;
         }
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
@@ -52,22 +55,43 @@ namespace Sigma.gg.Views.Windows
             if(!string.IsNullOrEmpty(SummonerNameTextBox.Text) && RegionComboBox.SelectedItem != null)
             {
                 Summoner sm = new Summoner();
-                
+
+                #region User Values
                 sm.name = SummonerNameTextBox.Text;
                 string reg = RegionComboBox.SelectedItem.ToString();
                 sm.region = (RiotSharp.Misc.Region)Enum.Parse(typeof(RiotSharp.Misc.Region), reg);
-                //^values taken from user^ 
+                #endregion
 
+                #region API Values
+                string tempRegion = Globals.regionsDictionary[sm.region];
                 var apiSummoner = await api.GetSummonerEntriesByName(sm.name, sm.region);
                 sm.puuid = apiSummoner.Puuid;
                 sm.id = apiSummoner.Id;
+                var ranks = await api.GetSummonerRanks(sm.id, tempRegion);
                 sm.profileIconId = apiSummoner.ProfileIconId;
                 sm.summonerLevel = apiSummoner.Level;
                 sm.revisionDate = apiSummoner.RevisionDate;
                 sm.accountId = apiSummoner.AccountId;
-                //^values taken from api^
+                sm.soloRank = ranks.Count > 0 ? ranks[0] : null;
+                if (ranks.Exists(x => x.queueType == "RANKED_FLEX_SR"))
+                {
+                    string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Assets\Images\Emblems");
+                    sm.flexRank = ranks.Find(x => x.queueType == "RANKED_FLEX_SR");
+                    sm.FlexWr = (int)((double)sm.flexRank.wins / (double)(sm.flexRank.wins + (double)sm.flexRank.losses) * 100);
+                    sm.flexRank.image = Globals.GetImageFromFile(path, $"emblem-{sm.flexRank.tier}.png");
+                }
+                if (ranks.Exists(x => x.queueType == "RANKED_SOLO_5x5"))
+                {
+                    string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Assets\Images\Emblems");
+                    sm.soloRank = ranks.Find(x => x.queueType == "RANKED_SOLO_5x5");
+                    sm.SoloWr = (int)((double)sm.soloRank.wins / ((double)sm.soloRank.wins + (double)sm.soloRank.losses) * 100);
+                    sm.soloRank.image = Globals.GetImageFromFile(path, $"emblem-{sm.soloRank.tier}.png");
+                }               
+                #endregion
 
                 Globals.MeSummoner = sm;
+                
+                //DashboardViewModel. nie wiem jak to zrobić
                 
             }
         }

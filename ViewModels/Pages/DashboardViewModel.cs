@@ -9,12 +9,14 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Data;
+using System.Windows.Media.Imaging;
 
 namespace Sigma.gg.ViewModels.Pages
 {
-    public partial class DashboardViewModel : ObservableObject
+    public partial class DashboardViewModel : ObservableObject, INotifyPropertyChanged
     {
         public ObservableCollection<MatchData> SummonerMatches = new ObservableCollection<MatchData>();
+        public static Summoner smr;
 
         private ICollectionView _summonerMatchesView;
 

@@ -90,7 +90,7 @@
                 <TextBlock Text="150 L" HorizontalAlignment="Left" Margin="400,40,0,0" FontSize="12"/>
                 <TextBlock Text="WR: 50%" HorizontalAlignment="Left" Margin="360,60,0,0" FontSize="12"/>
                 <TextBlock Text="75LP" HorizontalAlignment="Left" Margin="360,120,0,0" FontSize="12"/>
-                <ui:Image Source="pack://application:,,,/Assets/rankedEmblem/emblem-diamond.png" Height="100" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"/>
+                <ui:Image Height="100" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"/>
             </Grid>
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" CornerRadius="10" HorizontalAlignment="Right" Height="120" Width="510" Margin="0,200,0,0" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top">

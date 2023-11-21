@@ -7,7 +7,6 @@ using Sigma.gg.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -17,6 +16,8 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Runtime;
 using System.Runtime.Caching;
+using RiotSharp.Misc;
+using System.Collections;
 
 namespace Sigma.gg.Helpers
 {
@@ -27,6 +28,20 @@ namespace Sigma.gg.Helpers
         public static string summonerMe { get; set; }
         public static Summoner MeSummoner { get; set; }
         public static Dictionary<string, BitmapImage> storedImages = new Dictionary<string, BitmapImage>();
+        public static Dictionary<Region, string> regionsDictionary = new Dictionary<Region, string>()
+        {
+            { Region.Br, "Br1" },
+            { Region.Eune, "Eun1" },
+            { Region.Euw, "Euw1" },
+            { Region.Na, "Na1" },
+            { Region.Kr, "Kr" },
+            { Region.Lan, "La1" },
+            { Region.Las, "La2" },
+            { Region.Oce, "Oc1" },
+            { Region.Ru, "Ru" },
+            { Region.Tr, "Tr1" },
+            { Region.Jp, "Jp1" }  
+        };
         private static readonly ObjectCache memoryCache = MemoryCache.Default;
         public static async Task StoreImages()
         {

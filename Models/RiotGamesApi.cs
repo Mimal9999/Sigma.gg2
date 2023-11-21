@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using LanguageExt.Pipes;
+using Newtonsoft.Json;
 using RiotSharp;
 using RiotSharp.Endpoints.MatchEndpoint;
 using RiotSharp.Endpoints.StaticDataEndpoint.Champion;
@@ -184,6 +185,27 @@ namespace Sigma.gg.Models
                 // Handle the exception however you want.
                 return null;
             }
+        }
+        public async Task<List<Ranks>> GetSummonerRanks(string summonerId, string region)
+        {
+            HttpClient client = new HttpClient();
+            var response = await client.GetStringAsync($"https://{region}.api.riotgames.com/lol/league/v4/entries/by-summoner/{summonerId}?api_key={Globals.apiKey}");
+
+            if (response == "[]")
+            {
+                return null;
+            }
+            
+            try
+            {
+                List<Ranks> rank = JsonConvert.DeserializeObject<List<Ranks>>(response);
+                return rank;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
         }
     }
 }
