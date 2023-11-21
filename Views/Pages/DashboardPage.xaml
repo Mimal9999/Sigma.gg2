@@ -81,29 +81,29 @@
             </Grid>
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" CornerRadius="10" HorizontalAlignment="Right" Height="120" Width="510" Margin="0,60,0,0" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top">
-            <Grid>
+            <Grid DataContext="{Binding ViewModel.SummonerMe.soloRank}">
                 <ui:Image Source="pack://application:,,,/Assets/Banner2.png" Height="70" Width="120" Stretch="Fill" HorizontalAlignment="Left" Margin="90,20,0,0"/>
                 <ui:Image Source="pack://application:,,,/Assets/Black.png" Height="70" Width="300" Stretch="Fill" HorizontalAlignment="Left" Margin="210,20,0,0" CornerRadius="0,10,10,0"/>
-                <TextBlock Text="Solo/Duo" HorizontalAlignment="Left" Margin="180,40,0,0"/>
-                <TextBlock Text="DIAMOND I" HorizontalAlignment="Left" Margin="180,70,0,0" FontSize="20" FontWeight="Bold"/>
-                <TextBlock Text="150 W" HorizontalAlignment="Left" Margin="350,40,0,0" FontSize="12"/>
-                <TextBlock Text="150 L" HorizontalAlignment="Left" Margin="400,40,0,0" FontSize="12"/>
+                <TextBlock Text="{Binding queueType}" HorizontalAlignment="Left" Margin="180,40,0,0"/>
+                <TextBlock Text="{Binding rankName}" HorizontalAlignment="Left" Margin="180,70,0,0" FontSize="20" FontWeight="Bold"/>
+                <TextBlock Text="{Binding wins}" HorizontalAlignment="Left" Margin="350,40,0,0" FontSize="12"/>
+                <TextBlock Text="{Binding losses}" HorizontalAlignment="Left" Margin="400,40,0,0" FontSize="12"/>
                 <TextBlock Text="WR: 50%" HorizontalAlignment="Left" Margin="360,60,0,0" FontSize="12"/>
-                <TextBlock Text="75LP" HorizontalAlignment="Left" Margin="360,120,0,0" FontSize="12"/>
-                <ui:Image Height="100" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"/>
+                <TextBlock Text="{Binding leaguePoinstString}" HorizontalAlignment="Left" Margin="360,80,0,0" FontSize="12"/>
+                <ui:Image Source="{Binding image}" Height="100" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"/>
             </Grid>
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" CornerRadius="10" HorizontalAlignment="Right" Height="120" Width="510" Margin="0,200,0,0" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top">
-            <Grid>
+            <Grid DataContext="{Binding ViewModel.SummonerMe.flexRank}">
                 <ui:Image Source="pack://application:,,,/Assets/Banner2.png" Height="70" Width="120" Stretch="Fill" HorizontalAlignment="Left" Margin="90,20,0,0"/>
                 <ui:Image Source="pack://application:,,,/Assets/Black.png" Height="70" Width="300" Stretch="Fill" HorizontalAlignment="Left" Margin="210,20,0,0" CornerRadius="0,10,10,0"/>
-                <TextBlock Text="Solo/Duo" HorizontalAlignment="Left" Margin="180,40,0,0"/>
-                <TextBlock Text="DIAMOND I" HorizontalAlignment="Left" Margin="180,70,0,0" FontSize="20" FontWeight="Bold"/>
-                <TextBlock Text="150 W" HorizontalAlignment="Left" Margin="350,40,0,0" FontSize="12"/>
-                <TextBlock Text="150 L" HorizontalAlignment="Left" Margin="400,40,0,0" FontSize="12"/>
+                <TextBlock Text="{Binding queueType}" HorizontalAlignment="Left" Margin="180,40,0,0"/>
+                <TextBlock Text="{Binding rankName}" HorizontalAlignment="Left" Margin="180,70,0,0" FontSize="20" FontWeight="Bold"/>
+                <TextBlock Text="{Binding wins}" HorizontalAlignment="Left" Margin="350,40,0,0" FontSize="12"/>
+                <TextBlock Text="{Binding losses}" HorizontalAlignment="Left" Margin="400,40,0,0" FontSize="12"/>
                 <TextBlock Text="WR: 50%" HorizontalAlignment="Left" Margin="360,60,0,0" FontSize="12"/>
-                <TextBlock Text="75LP" HorizontalAlignment="Left" Margin="360,120,0,0" FontSize="12"/>
-                <ui:Image Source="pack://application:,,,/Assets/rankedEmblem/emblem-diamond.png" Height="100" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"/>
+                <TextBlock Text="{Binding leaguePoinstString}" HorizontalAlignment="Left" Margin="360,80,0,0" FontSize="12"/>
+                <ui:Image Source="{Binding image}" Height="100" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"/>
             </Grid>
         </Border>
         

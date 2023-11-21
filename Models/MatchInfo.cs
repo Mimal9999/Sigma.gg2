@@ -457,6 +457,7 @@ public class Ranks
     public string summonerId { get; set; }
     public string summonerName { get; set; }
     public int leaguePoints { get; set; }
+    public string leaguePoinstString { get; set; }
     public int wins { get; set; }
     public int losses { get; set; }
     public bool veteran { get; set; }
@@ -464,6 +465,7 @@ public class Ranks
     public bool freshBlood { get; set; }
     public bool hotStreak { get; set; }
     public BitmapImage image { get; set; }
+    public string rankName { get; set; }
 
     public string GetRank()
     {

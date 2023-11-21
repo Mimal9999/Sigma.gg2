@@ -18,9 +18,11 @@ namespace Sigma.gg.Views.Windows
     public partial class MainWindow
     {
         public MainWindowViewModel ViewModel { get; }
+        public DashboardViewModel DashViewModel { get; }
         RiotGamesApi api;
         public MainWindow(
             MainWindowViewModel viewModel,
+            DashboardViewModel dashboardViewModel,
             INavigationService navigationService,
             IServiceProvider serviceProvider,
             ISnackbarService snackbarService,
@@ -29,11 +31,13 @@ namespace Sigma.gg.Views.Windows
         {
             Wpf.Ui.Appearance.Watcher.Watch(this);
 
+            Globals.apiKey = "";
+
             ViewModel = viewModel;
+            DashViewModel = dashboardViewModel;            
             DataContext = this;
 
-            InitializeComponent();
-            Globals.apiKey = "";
+            InitializeComponent();            
             api = new RiotGamesApi();
             Globals.version = api.GetLatestVersion();
 
@@ -79,6 +83,8 @@ namespace Sigma.gg.Views.Windows
                     sm.flexRank = ranks.Find(x => x.queueType == "RANKED_FLEX_SR");
                     sm.FlexWr = (int)((double)sm.flexRank.wins / (double)(sm.flexRank.wins + (double)sm.flexRank.losses) * 100);
                     sm.flexRank.image = Globals.GetImageFromFile(path, $"emblem-{sm.flexRank.tier}.png");
+                    sm.flexRank.rankName = sm.flexRank.tier + " " + sm.flexRank.rank;
+                    sm.flexRank.leaguePoinstString = sm.flexRank.leaguePoints.ToString() + " LP";
                 }
                 if (ranks.Exists(x => x.queueType == "RANKED_SOLO_5x5"))
                 {
@@ -86,13 +92,14 @@ namespace Sigma.gg.Views.Windows
                     sm.soloRank = ranks.Find(x => x.queueType == "RANKED_SOLO_5x5");
                     sm.SoloWr = (int)((double)sm.soloRank.wins / ((double)sm.soloRank.wins + (double)sm.soloRank.losses) * 100);
                     sm.soloRank.image = Globals.GetImageFromFile(path, $"emblem-{sm.soloRank.tier}.png");
+                    sm.soloRank.rankName = sm.soloRank.tier + " " + sm.soloRank.rank;
+                    sm.soloRank.leaguePoinstString = sm.soloRank.leaguePoints.ToString() + " LP";
                 }               
                 #endregion
 
                 Globals.MeSummoner = sm;
-                
-                //DashboardViewModel. nie wiem jak to zrobić
-                
+                DashViewModel.SummonerMe = Globals.MeSummoner;
+
             }
         }
     }

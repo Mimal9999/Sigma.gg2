@@ -16,7 +16,28 @@ namespace Sigma.gg.ViewModels.Pages
     public partial class DashboardViewModel : ObservableObject, INotifyPropertyChanged
     {
         public ObservableCollection<MatchData> SummonerMatches = new ObservableCollection<MatchData>();
-        public static Summoner smr;
+
+        private Summoner _summonerMe;
+
+        public Summoner SummonerMe
+        {
+            get { return _summonerMe; }
+            set
+            {
+                if (_summonerMe != value)
+                {
+                    _summonerMe = value;
+                    OnPropertyChanged(nameof(SummonerMe));
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         private ICollectionView _summonerMatchesView;
 
@@ -25,10 +46,9 @@ namespace Sigma.gg.ViewModels.Pages
             get { return _summonerMatchesView; }
         }
 
-        RiotGamesApi api = new RiotGamesApi();
-
         public async Task LoadMatches()
-        {  
+        {
+            RiotGamesApi api = new RiotGamesApi();
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             List<string> sMatches;
