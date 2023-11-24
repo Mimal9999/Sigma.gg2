@@ -22,25 +22,65 @@ using System.Diagnostics;
 using Sigma.gg.Helpers;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Threading;
+using System.Windows.Controls;
 
 namespace Sigma.gg.Views.Pages
 {
-    public partial class DashboardPage : INavigableView<DashboardViewModel>
+    public partial class DashboardPage : INavigableView<DashboardViewModel>, INotifyPropertyChanged
     {
         public static List<QueueDetails> queues;
         public DashboardViewModel ViewModel { get; }
         public Summoner activeSummoner;
         RiotGamesApi api = new RiotGamesApi();
 
+        private DispatcherTimer _timer;
+        private TimeSpan _remainingTime;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string TimeRemaining
+        {
+            get { return _remainingTime.ToString(@"mm\:ss"); }
+        }
         public DashboardPage(DashboardViewModel viewModel)
         {
             ViewModel = viewModel;
+
+            _remainingTime = TimeSpan.FromSeconds(120);
+
+            // Inicjalizacja timera
+            _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Tick += Timer_Tick;
+
             DataContext = this;
             InitializeComponent();
         }
-        private async void Button_Click_1(object sender, RoutedEventArgs e)
+
+        private void Timer_Tick(object sender, EventArgs e)
         {
+            _remainingTime = _remainingTime.Subtract(TimeSpan.FromSeconds(1));
+            UpdateButton.Content = _remainingTime.ToString(@"mm\:ss");
+
+            if (_remainingTime <= TimeSpan.Zero)
+            {
+                // Po zakończeniu odliczania odblokuj przycisk
+                UpdateButton.IsEnabled = true;
+                UpdateButton.Content = "Update";
+                _timer.Stop();
+            }
+
+            // Aktualizuj informacje o czasie
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimeRemaining)));
+        }
+        private async void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateButton.IsEnabled = false;
+            _timer.Start();
             await Task.Run(async () => await ViewModel.LoadMatches());
+            Task.WaitAll();
             matchList.ItemsSource = ViewModel.SummonerMatchesView;
             //RefreshScreen();
         }
@@ -79,7 +119,7 @@ namespace Sigma.gg.Views.Pages
         }
         private void ToggleGrid_Clicked(object sender, EventArgs e)
         {
-            var button = (Button)sender;
+            var button = (System.Windows.Controls.Button)sender;
             var matchData = button?.DataContext as MatchData;
 
             if (matchData != null)

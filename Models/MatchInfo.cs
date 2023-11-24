@@ -1,5 +1,6 @@
 ﻿// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
 
+using CommunityToolkit.Mvvm.ComponentModel.__Internals;
 using Newtonsoft.Json;
 using RiotSharp.Misc;
 using System.Collections;
@@ -374,9 +375,7 @@ public class Summoner
     public Ranks flexRank { get; set; }
     public RiotSharp.Misc.Region region { get; set; }
     public int LoadedMatches { get; set; }   
-    public int Remakes { get; set; }
-    public int SoloWr { get; set; }
-    public int FlexWr { get; set; }
+    public int Remakes { get; set; }    
     public long LadderRank { get; set; }
     public double LadderTop { get; set; }
     public int TopPlayed { get; set; }
@@ -384,7 +383,15 @@ public class Summoner
     public int MidPlayed { get; set; }
     public int AdcPlayed { get; set; }
     public int SupportPlayed { get; set; }
-    public Dictionary<string, int> ChampionsPlayed { get; set; }
+    public Dictionary<string, int> ChampionsPlayed { get { return _championsPlayed; } set 
+        {
+            if (_championsPlayed != value)
+            {
+                _championsPlayed = value;
+            }
+        } }
+    private Dictionary<string, int> _championsPlayed = new Dictionary<string, int>();
+    public string iconSource { get; set; }
 }
 public class Mastery
 {
@@ -452,6 +459,7 @@ public class Ranks
 {
     public string leagueId { get; set; }
     public string queueType { get; set; }
+    public string queueName { get; set; }
     public string tier { get; set; }
     public string rank { get; set; }
     public string summonerId { get; set; }
@@ -466,6 +474,7 @@ public class Ranks
     public bool hotStreak { get; set; }
     public BitmapImage image { get; set; }
     public string rankName { get; set; }
+    public string winRateString { get; set; }
 
     public string GetRank()
     {

@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Media;
+using RiotSharp.Endpoints.ChampionEndpoint;
 
 namespace Sigma.gg.Models
 {
@@ -89,8 +90,7 @@ namespace Sigma.gg.Models
             gameEndString = TimeAgoFromUnixTimestamp(gameEnd);
             SetTeams();
             SetParticipantInfo(match);
-            await SetRanks();
-            //victory = match.info.           
+            await SetRanks();          
             MVPScore();                     
             SetSefl();
         }
@@ -151,7 +151,7 @@ namespace Sigma.gg.Models
             }
             catch (RiotSharpException ex)
             {
-                // Handle the exception however you want.
+                Debug.WriteLine($"An error occurred in GetMatch method : {ex.Message}");
                 return null;
             }
         }
@@ -204,7 +204,7 @@ namespace Sigma.gg.Models
         /// </summary>
         private async Task SetRanks()
         {
-            SemaphoreSlim semaphore = new SemaphoreSlim(20); // Ustaw maksymalną liczbę równoczesnych żądań (5 w tym przykładzie)
+            SemaphoreSlim semaphore = new SemaphoreSlim(20);
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -212,32 +212,55 @@ namespace Sigma.gg.Models
             HttpClient client = new HttpClient();            
             var tasks = participants.Select(async p =>
             {
-                await semaphore.WaitAsync(); // Czekaj, aż semafor pozwoli na wykonanie żądania
+                await semaphore.WaitAsync();
 
-                try
+                if (p.summonerName == Globals.MeSummoner.name)
                 {
-                    var response = await client.GetStringAsync($"https://eun1.api.riotgames.com/lol/league/v4/entries/by-summoner/{p.summonerId}?api_key={Globals.apiKey}");
-
-                    if (response == "[]")
+                    if (Globals.MeSummoner.flexRank != null || Globals.MeSummoner.soloRank != null)
                     {
-                        p.rank = "Unranked 0";
+                        List<Ranks> ranks = new List<Ranks>()
+                        {
+                            Globals.MeSummoner.flexRank,
+                            Globals.MeSummoner.soloRank
+                        };
+                        p.rank = GetHigherRank(ranks);
                     }
                     else
                     {
-                        try
-                        {
-                            List<Ranks> rank = JsonConvert.DeserializeObject<List<Ranks>>(response);
-                            p.rank = GetHigherRank(rank);
-                        }
-                        catch (Exception)
+                        p.rank = "Unranked 0";
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        var response = await client.GetStringAsync($"https://eun1.api.riotgames.com/lol/league/v4/entries/by-summoner/{p.summonerId}?api_key={Globals.apiKey}");
+
+                        if (response == "[]")
                         {
                             p.rank = "Unranked 0";
                         }
+                        else
+                        {
+                            try
+                            {
+                                List<Ranks> rank = JsonConvert.DeserializeObject<List<Ranks>>(response);
+                                p.rank = GetHigherRank(rank);
+                            }
+                            catch (Exception)
+                            {
+                                p.rank = "Unranked 0";
+                            }
+                        }
                     }
-                }
-                finally
-                {
-                    semaphore.Release(); // Zwolnij semafor po zakończeniu żądania
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"An error occurred in SetRanks method : {ex.Message}");
+                    }                    
+                    finally
+                    {
+                        semaphore.Release();
+                    }
                 }
             });
 
@@ -431,6 +454,16 @@ namespace Sigma.gg.Models
                 killP = me.killParticipation;
                 cs = $"{me.totalCs} {me.csPerMin}";
                 controlWards = $"Control Wards: {me.sightWardsBoughtInGame}";
+                if (Globals.MeSummoner.ChampionsPlayed.TryGetValue(me.championName, out int count))
+                {
+                    // Jeśli tak, zwiększ liczbę wystąpień o 1
+                    Globals.MeSummoner.ChampionsPlayed[me.championName] = count + 1;
+                }
+                else
+                {
+                    // Jeśli nie, dodaj nową postać z liczbą wystąpień równą 1
+                    Globals.MeSummoner.ChampionsPlayed[me.championName] = 1;
+                }
                 this.me = me;
                 multikill = GetLargestMultikill();
             }
@@ -444,7 +477,13 @@ namespace Sigma.gg.Models
         /// <returns>The average rank tier in a human-readable format.</returns>
         private string GetAvgTier()
         {
-            var avgTier = participants.Sum(p => (int)Enum.Parse(typeof(RanksEnum), p.rank.Replace(" ", "_"))) / 10;
+            //var avgTier = participants.Sum(p => (int)Enum.Parse(typeof(RanksEnum), p.rank.Replace(" ", "_"))) / 10;
+            //return ((RanksEnum)avgTier).ToString().Replace("_", " ");
+            var sumOfRanks = participants
+        .Sum(p => (int)Enum.Parse(typeof(RanksEnum), (p.rank ?? "Unranked 0").Replace(" ", "_")));
+
+            var avgTier = sumOfRanks / 10;
+
             return ((RanksEnum)avgTier).ToString().Replace("_", " ");
         }
         /// <summary>
@@ -500,15 +539,24 @@ namespace Sigma.gg.Models
             }
         }
         private void SetRunesImages(Participant p)
-        {           
-            string filename1 = "R"+p.perks.styles[0].selections[0].perk.ToString() + ".png";
-            string filename2 = "R"+p.perks.styles[1].style.ToString() + ".png";
-            p.primaryRuneImage = Globals.GetImageFromFile(@"Assets\Images\Runes", filename1);
-            p.secondaryRuneImage = Globals.GetImageFromFile(@"Assets\Images\Runes", filename2);            
+        {
+            try
+            {
+                string filename1 = "R" + p.perks.styles[0].selections[0].perk.ToString() + ".png";
+                string filename2 = "R" + p.perks.styles[1].style.ToString() + ".png";
+                p.primaryRuneImage = Globals.GetImageFromFile(@"Assets\Images\Runes", filename1);
+                p.secondaryRuneImage = Globals.GetImageFromFile(@"Assets\Images\Runes", filename2);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred in SetRunesImages method : {ex.Message}");
+            }                  
         }
         private void SetItemsImages(Participant p)
-        {            
-            List<BitmapImage> itemsImages = new List<BitmapImage>
+        {
+            try
+            {
+                List<BitmapImage> itemsImages = new List<BitmapImage>
             {
                 p.item0 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item0.ToString() + ".png") : null,
                 p.item1 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item1.ToString() + ".png") : null,
@@ -518,19 +566,38 @@ namespace Sigma.gg.Models
                 p.item5 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item5.ToString() + ".png") : null,
                 p.item6 != 0 ? Globals.GetImageFromFile(@"Assets\Images\Items", "I" + p.item6.ToString() + ".png") : null
             };
-            p.itemsImages = itemsImages;            
+                p.itemsImages = itemsImages;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred in SetItemsImages method : {ex.Message}");
+            }                
         }
         private void SetChampionIcons(Participant p)
-        {            
-            string filename = "C" + p.championId.ToString() + ".png";
-            p.championImage = Globals.GetImageFromFile(@"Assets\Images\Champions", filename);            
+        {
+            try
+            {
+                string filename = "C" + p.championId.ToString() + ".png";
+                p.championImage = Globals.GetImageFromFile(@"Assets\Images\Champions", filename);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine($"An error occurred in SetChampionIcons method : {ex.Message}");
+            }          
         }
         private void SetSummonerSpellsIcons(Participant p)
-        {            
-            string filename1 = "S" + p.summoner1Id + ".png";
-            string filename2 = "S" + p.summoner2Id + ".png";
-            p.summoner1Image = Globals.GetImageFromFile(@"Assets\Images\SummonerSpells", filename1);
-            p.summoner2Image = Globals.GetImageFromFile(@"Assets\Images\SummonerSpells", filename2);            
+        {
+            try
+            {
+                string filename1 = "S" + p.summoner1Id + ".png";
+                string filename2 = "S" + p.summoner2Id + ".png";
+                p.summoner1Image = Globals.GetImageFromFile(@"Assets\Images\SummonerSpells", filename1);
+                p.summoner2Image = Globals.GetImageFromFile(@"Assets\Images\SummonerSpells", filename2);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred in SetSummonerSpellsIcons method : {ex.Message}");
+            }         
         }
         private void SetParsedDamage(Participant p)
         {           

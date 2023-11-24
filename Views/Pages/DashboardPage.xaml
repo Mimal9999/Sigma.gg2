@@ -69,14 +69,14 @@
             
         </lvc:PieChart>
         <Border BorderBrush="Black" BorderThickness="1" CornerRadius="10" HorizontalAlignment="Left" Height="120" Width="510" Margin="0,60,0,0" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top">
-            <Grid>
-                <ui:Image Source="pack://application:,,,/Assets/588.png" Height="110" Width="110" Stretch="Fill" HorizontalAlignment="Left" Margin="0,0,0,0" CornerRadius="10"/>
+            <Grid DataContext="{Binding ViewModel.SummonerMe}">
+                <ui:Image Source="{Binding iconSource}" Height="110" Width="110" Stretch="Fill" HorizontalAlignment="Left" Margin="0,0,0,0" CornerRadius="10"/>
                 
-                <TextBlock Text="Kot w Dupach" HorizontalAlignment="Left" Margin="130,10,0,0" FontSize="20" FontWeight="Bold"/>
+                <TextBlock Text="{Binding name}" HorizontalAlignment="Left" Margin="130,10,0,0" FontSize="20" FontWeight="Bold"/>
                 <TextBlock Text="Ladder Rank: 300 000 (25% of top)" HorizontalAlignment="Left" Margin="130,45,0,0" FontSize="12"/>
-                <ui:Button Content="Update" Margin="130,70,0,0" VerticalAlignment="Top" Width="95" Click="Button_Click_1"/>
+                <ui:Button Content="Update" Margin="130,70,0,0" VerticalAlignment="Top" Width="95" Click="UpdateButton_Click" Name="UpdateButton"/>
                 <Border CornerRadius="10" Background="DimGray" Height="25" Width="40" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="35,0,0,0">
-                    <ui:TextBlock Text="750" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <ui:TextBlock Text="{Binding summonerLevel}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </Border>
             </Grid>
         </Border>
@@ -84,11 +84,11 @@
             <Grid DataContext="{Binding ViewModel.SummonerMe.soloRank}">
                 <ui:Image Source="pack://application:,,,/Assets/Banner2.png" Height="70" Width="120" Stretch="Fill" HorizontalAlignment="Left" Margin="90,20,0,0"/>
                 <ui:Image Source="pack://application:,,,/Assets/Black.png" Height="70" Width="300" Stretch="Fill" HorizontalAlignment="Left" Margin="210,20,0,0" CornerRadius="0,10,10,0"/>
-                <TextBlock Text="{Binding queueType}" HorizontalAlignment="Left" Margin="180,40,0,0"/>
+                <TextBlock Text="{Binding queueName}" HorizontalAlignment="Left" Margin="180,40,0,0"/>
                 <TextBlock Text="{Binding rankName}" HorizontalAlignment="Left" Margin="180,70,0,0" FontSize="20" FontWeight="Bold"/>
                 <TextBlock Text="{Binding wins}" HorizontalAlignment="Left" Margin="350,40,0,0" FontSize="12"/>
                 <TextBlock Text="{Binding losses}" HorizontalAlignment="Left" Margin="400,40,0,0" FontSize="12"/>
-                <TextBlock Text="WR: 50%" HorizontalAlignment="Left" Margin="360,60,0,0" FontSize="12"/>
+                <TextBlock Text="{Binding winRateString}" HorizontalAlignment="Left" Margin="360,60,0,0" FontSize="12"/>
                 <TextBlock Text="{Binding leaguePoinstString}" HorizontalAlignment="Left" Margin="360,80,0,0" FontSize="12"/>
                 <ui:Image Source="{Binding image}" Height="100" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"/>
             </Grid>
@@ -97,11 +97,11 @@
             <Grid DataContext="{Binding ViewModel.SummonerMe.flexRank}">
                 <ui:Image Source="pack://application:,,,/Assets/Banner2.png" Height="70" Width="120" Stretch="Fill" HorizontalAlignment="Left" Margin="90,20,0,0"/>
                 <ui:Image Source="pack://application:,,,/Assets/Black.png" Height="70" Width="300" Stretch="Fill" HorizontalAlignment="Left" Margin="210,20,0,0" CornerRadius="0,10,10,0"/>
-                <TextBlock Text="{Binding queueType}" HorizontalAlignment="Left" Margin="180,40,0,0"/>
+                <TextBlock Text="{Binding queueName}" HorizontalAlignment="Left" Margin="180,40,0,0"/>
                 <TextBlock Text="{Binding rankName}" HorizontalAlignment="Left" Margin="180,70,0,0" FontSize="20" FontWeight="Bold"/>
                 <TextBlock Text="{Binding wins}" HorizontalAlignment="Left" Margin="350,40,0,0" FontSize="12"/>
                 <TextBlock Text="{Binding losses}" HorizontalAlignment="Left" Margin="400,40,0,0" FontSize="12"/>
-                <TextBlock Text="WR: 50%" HorizontalAlignment="Left" Margin="360,60,0,0" FontSize="12"/>
+                <TextBlock Text="{Binding winRateString}" HorizontalAlignment="Left" Margin="360,60,0,0" FontSize="12"/>
                 <TextBlock Text="{Binding leaguePoinstString}" HorizontalAlignment="Left" Margin="360,80,0,0" FontSize="12"/>
                 <ui:Image Source="{Binding image}" Height="100" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"/>
             </Grid>

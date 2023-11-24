@@ -56,50 +56,33 @@ namespace Sigma.gg.Views.Windows
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            if(!string.IsNullOrEmpty(SummonerNameTextBox.Text) && RegionComboBox.SelectedItem != null)
+            await Search();
+        }
+
+        private async void SummonerNameTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
-                Summoner sm = new Summoner();
+                await Search();
+            }
+        }
+        private async Task Search()
+        {
+            if (!string.IsNullOrEmpty(SummonerNameTextBox.Text) && RegionComboBox.SelectedItem != null)
+            {
+                Summoner sm = await ViewModel.GetActiveSummoner(RegionComboBox.SelectedItem.ToString(), SummonerNameTextBox.Text, api);
 
-                #region User Values
-                sm.name = SummonerNameTextBox.Text;
-                string reg = RegionComboBox.SelectedItem.ToString();
-                sm.region = (RiotSharp.Misc.Region)Enum.Parse(typeof(RiotSharp.Misc.Region), reg);
-                #endregion
-
-                #region API Values
-                string tempRegion = Globals.regionsDictionary[sm.region];
-                var apiSummoner = await api.GetSummonerEntriesByName(sm.name, sm.region);
-                sm.puuid = apiSummoner.Puuid;
-                sm.id = apiSummoner.Id;
-                var ranks = await api.GetSummonerRanks(sm.id, tempRegion);
-                sm.profileIconId = apiSummoner.ProfileIconId;
-                sm.summonerLevel = apiSummoner.Level;
-                sm.revisionDate = apiSummoner.RevisionDate;
-                sm.accountId = apiSummoner.AccountId;
-                sm.soloRank = ranks.Count > 0 ? ranks[0] : null;
-                if (ranks.Exists(x => x.queueType == "RANKED_FLEX_SR"))
+                if(Globals.MeSummoner == null)
                 {
-                    string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Assets\Images\Emblems");
-                    sm.flexRank = ranks.Find(x => x.queueType == "RANKED_FLEX_SR");
-                    sm.FlexWr = (int)((double)sm.flexRank.wins / (double)(sm.flexRank.wins + (double)sm.flexRank.losses) * 100);
-                    sm.flexRank.image = Globals.GetImageFromFile(path, $"emblem-{sm.flexRank.tier}.png");
-                    sm.flexRank.rankName = sm.flexRank.tier + " " + sm.flexRank.rank;
-                    sm.flexRank.leaguePoinstString = sm.flexRank.leaguePoints.ToString() + " LP";
+                    Globals.MeSummoner = sm;
+                    DashViewModel.SummonerMe = Globals.MeSummoner;
                 }
-                if (ranks.Exists(x => x.queueType == "RANKED_SOLO_5x5"))
+
+                if(Globals.MeSummoner.name != sm.name)
                 {
-                    string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Assets\Images\Emblems");
-                    sm.soloRank = ranks.Find(x => x.queueType == "RANKED_SOLO_5x5");
-                    sm.SoloWr = (int)((double)sm.soloRank.wins / ((double)sm.soloRank.wins + (double)sm.soloRank.losses) * 100);
-                    sm.soloRank.image = Globals.GetImageFromFile(path, $"emblem-{sm.soloRank.tier}.png");
-                    sm.soloRank.rankName = sm.soloRank.tier + " " + sm.soloRank.rank;
-                    sm.soloRank.leaguePoinstString = sm.soloRank.leaguePoints.ToString() + " LP";
-                }               
-                #endregion
-
-                Globals.MeSummoner = sm;
-                DashViewModel.SummonerMe = Globals.MeSummoner;
-
+                    Globals.MeSummoner = sm;
+                    DashViewModel.SummonerMe = Globals.MeSummoner;
+                }
             }
         }
     }

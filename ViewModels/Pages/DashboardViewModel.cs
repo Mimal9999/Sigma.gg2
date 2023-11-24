@@ -44,32 +44,47 @@ namespace Sigma.gg.ViewModels.Pages
         public ICollectionView SummonerMatchesView
         {
             get { return _summonerMatchesView; }
+            set
+            {
+                if (_summonerMatchesView != value)
+                {
+                    _summonerMatchesView = value;
+                    OnPropertyChanged(nameof(SummonerMatchesView));
+                }
+            }
         }
 
         public async Task LoadMatches()
         {
-            RiotGamesApi api = new RiotGamesApi();
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            List<string> sMatches;
-            IList<MatchData> matchDatas = new List<MatchData>();
-            var result = await api.GetMatches(RiotSharp.Misc.Region.Europe, "cnFwOQeLFjTLgT3h_2AwSrhOaGXwy-1Fb24acmAeGURdb1OipUbCf6GheEwujQKd5uWVu6h25yF3bw", Globals.apiKey);
-            sMatches = result;
+            try
+            {
+                RiotGamesApi api = new RiotGamesApi();
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                List<string> sMatches;
+                IList<MatchData> matchDatas = new List<MatchData>();
+                var result = await api.GetMatches(RiotSharp.Misc.Region.Europe, Globals.MeSummoner.puuid, Globals.apiKey);
+                sMatches = result;
 
-            if (sMatches.Count > 0)
-            {                
-                Globals.summonerMe = "Kot w Dupach";
-                foreach (var match in sMatches)
+                if (sMatches.Count > 0)
                 {
-                    var matchData = new MatchData();
-                    await matchData.GetMatchDetails(match);
-                    SummonerMatches.Add(matchData);
-                    matchDatas.Add(matchData);
+                    Globals.summonerMe = Globals.MeSummoner.name;
+                    foreach (var match in sMatches)
+                    {
+                        var matchData = new MatchData();
+                        await matchData.GetMatchDetails(match);
+                        SummonerMatches.Add(matchData);
+                        matchDatas.Add(matchData);
+                    }
+                    SummonerMatchesView = CollectionViewSource.GetDefaultView(SummonerMatches);
                 }
-                _summonerMatchesView = CollectionViewSource.GetDefaultView(SummonerMatches);
+                stopwatch.Stop();
+                Debug.WriteLine("Time elapsed: {0}", stopwatch.Elapsed);
             }
-            stopwatch.Stop();
-            Debug.WriteLine("Time elapsed: {0}", stopwatch.Elapsed);
+            catch(Exception ex)
+            {
+                Debug.WriteLine($"An error occurred in LoadMatches method : {ex.Message}");
+            }            
         }
 
     }
