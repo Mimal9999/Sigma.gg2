@@ -48,6 +48,8 @@ namespace Sigma.gg.Models
         public string multikill { get; set; }
         public long gameEnd { get; set; }
         public string gameEndString { get; set; }
+        public Team team1 { get; set; }
+        public Team team2 { get; set; }
 
         private string isGridVisible;
 
@@ -88,6 +90,8 @@ namespace Sigma.gg.Models
             gameDuration = ParseGameDuration(match.info.gameDuration);
             gameEnd = match.info.gameEndTimestamp;
             gameEndString = TimeAgoFromUnixTimestamp(gameEnd);
+            team1 = match.info.teams[0];
+            team2 = match.info.teams[1];
             SetTeams();
             SetParticipantInfo(match);
             await SetRanks();          

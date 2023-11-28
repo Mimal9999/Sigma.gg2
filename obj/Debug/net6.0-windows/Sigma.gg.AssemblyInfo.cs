@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sigma.gg")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5291ba88ee56e2f4e2e7047e704e4bea218501d4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sigma.gg")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sigma.gg")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

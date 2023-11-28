@@ -24,6 +24,7 @@
         <helpers:MvpScoreColorConverter x:Key="MvpScoreColorConverter" />
         <helpers:WinColorConverter x:Key="WinColorConverter" />
         <helpers:MultikillImageConverter x:Key="MultikillImageConverter"/>
+        <helpers:TeamWinImageConverter x:Key="TeamWinImageConverter"/>
         <Style TargetType="{x:Type Line}" x:Key="LinesStyle">
             <Setter Property="Stroke">
                 <Setter.Value>
@@ -155,7 +156,10 @@
                         </Grid.ColumnDefinitions>
                         <Grid HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Height="115">
                             <Grid.Background>
-                                <ImageBrush ImageSource="pack://application:,,,/Assets/backgroundComplete.png">
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <Binding Path="me.win" Converter="{StaticResource WinColorConverter}" />
+                                    </ImageBrush.ImageSource>
                                 </ImageBrush>
                             </Grid.Background>
                             <Grid.ColumnDefinitions>
@@ -224,7 +228,7 @@
                                 <ui:Image CornerRadius="5" Source="{Binding me.itemsImages[5], Mode=OneWay}" Width="35" Height="35" PresentationOptions:Freeze="True" />
                             </Border>
 
-                            <ui:Image Style="{StaticResource LinesStyle}" Source="{Binding me.itemsImages[6], Mode=OneWay}" CornerRadius="100" Height="35" Width="35" Margin="570,0,0,0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <ui:Image Source="{Binding me.itemsImages[6], Mode=OneWay}" CornerRadius="100" Height="35" Width="35" Margin="570,0,0,0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
 
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="625,18,0,0" Width="110">
@@ -328,15 +332,28 @@
 
                         </Grid>
 
-                        <Grid Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Width="1550">
+                        <Grid Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Width="1550"  Visibility="{Binding IsGridVisible, Mode=OneWay}">
                             <Grid.Background>
-                                <ImageBrush ImageSource="pack://application:,,,/Assets/score.png">
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <Binding Path="participantsTeam1[0].win" Converter="{StaticResource TeamWinImageConverter}" />
+                                    </ImageBrush.ImageSource>
                                 </ImageBrush>
                             </Grid.Background>
-                            <Grid HorizontalAlignment="Left" Visibility="{Binding IsGridVisible, Mode=OneWay}" Margin="0,53,0,10">
-                                <Grid.Background>
-                                    <ImageBrush ImageSource="pack://application:,,,/Assets/lost.png" Opacity="0.7"/>
-                                </Grid.Background>
+                            <ui:Image VerticalAlignment="Top" HorizontalAlignment="Center" Stretch="Uniform" Height="30" Margin="0,13,0,0" Source="pack://application:,,,/Assets/objectives.png"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="400,18,0,0">
+                                <TextBlock Text="{Binding team1.objectives.Buildings, Mode=OneWay}" FontSize="15" FontWeight="Bold" Margin="80,0,65,0" Padding="0" HorizontalAlignment="Left"/>
+                                <TextBlock Text="{Binding team1.objectives.baron.kills, Mode=OneWay}" FontSize="15" FontWeight="Bold" Margin="0,0,75,0" Padding="0" HorizontalAlignment="Left"/>
+                                <TextBlock Text="{Binding team1.objectives.dragon.kills, Mode=OneWay}" FontSize="15" FontWeight="Bold" Margin="0,0,240,0" Padding="0" HorizontalAlignment="Left"/>
+
+                                <!-- rozdzielić to -->
+                                
+                                <TextBlock Text="{Binding team2.objectives.dragon.kills, Mode=OneWay}" FontSize="15" FontWeight="Bold" Margin="0,0,70,0" Padding="0" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding team2.objectives.baron.kills, Mode=OneWay}" FontSize="15" FontWeight="Bold" Margin="0,0,75,0" Padding="0" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding team2.objectives.Buildings, Mode=OneWay}" FontSize="15" FontWeight="Bold" Margin="0,0,100,0" Padding="0" HorizontalAlignment="Right"/>
+                            </StackPanel>
+
+                            <Grid HorizontalAlignment="Left" Margin="0,53,0,10">
                                 <ListView ItemsSource="{Binding participantsTeam1, Mode=OneWay}" Name="ParticipantsList" Margin="0,5,0,0">
                                 <ListView.Template>
                                     <ControlTemplate>
@@ -428,9 +445,7 @@
                             </ListView>
                             </Grid>
                             <Grid HorizontalAlignment="Right" Visibility="{Binding IsGridVisible, Mode=OneWay}" Margin="0,53,0,10">
-                                <Grid.Background>
-                                    <ImageBrush ImageSource="pack://application:,,,/Assets/win180.png" Opacity="0.7"/>
-                                </Grid.Background>
+                                
                                 <ListView ItemsSource="{Binding participantsTeam2, Mode=OneWay}" Margin="0,5,0,0">
                                 <ListView.Template>
                                     <ControlTemplate>

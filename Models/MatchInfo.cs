@@ -144,8 +144,8 @@ public class Info
 
 public class Inhibitor
 {
-    public bool? first { get; set; }
-    public int? kills { get; set; }
+    public bool first { get; set; }
+    public int kills { get; set; }
 }
 
 public class Metadata
@@ -161,9 +161,10 @@ public class Objectives
     public Champion ?champion { get; set; }
     public Dragon ?dragon { get; set; }
     public Horde ?horde { get; set; }
-    public Inhibitor? inhibitor { get; set; }
+    public Inhibitor inhibitor { get; set; }
     public RiftHerald ?riftHerald { get; set; }
-    public Tower ?tower { get; set; }
+    public int Buildings => tower.kills + inhibitor.kills; 
+    public Tower tower { get; set; }
 }
 
 public class Participant
@@ -352,14 +353,14 @@ public class Team
 {
     public List<Ban> ?bans { get; set; }
     public Objectives ?objectives { get; set; }
-    public int? teamId { get; set; }
+    public int teamId { get; set; }
     public bool? win { get; set; }
 }
 
 public class Tower
 {
-    public bool? first { get; set; }
-    public int? kills { get; set; }
+    public bool first { get; set; }
+    public int kills { get; set; }
 }
 
 public class Summoner

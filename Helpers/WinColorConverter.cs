@@ -12,13 +12,11 @@ public class WinColorConverter : IValueConverter
         {
             if (win)
             {
-                var color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#5460FD");
-                return color;
+                return "pack://application:,,,/Assets/WinBackground.png";
             }
             else
             {
-                var color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#FD5471");
-                return color;
+                return "pack://application:,,,/Assets/LostBackground.png";
             }
         }
         else

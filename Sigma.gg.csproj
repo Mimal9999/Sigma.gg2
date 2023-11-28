@@ -60,11 +60,15 @@
     <None Remove="Assets\Kindred_1.jpg" />
     <None Remove="Assets\lost.png" />
     <None Remove="Assets\lost180.png" />
+    <None Remove="Assets\LostBackground.png" />
+    <None Remove="Assets\LostLeft.png" />
     <None Remove="Assets\magic.png" />
     <None Remove="Assets\multikillDouble.png" />
     <None Remove="Assets\multikillPenta.png" />
     <None Remove="Assets\multikillQuadra.png" />
     <None Remove="Assets\multikillTripple.png" />
+    <None Remove="Assets\objectives.png" />
+    <None Remove="Assets\objectivesInverted.png" />
     <None Remove="Assets\rankedEmblem\emblem-bronze.png" />
     <None Remove="Assets\rankedEmblem\emblem-challenger.png" />
     <None Remove="Assets\rankedEmblem\emblem-diamond.png" />
@@ -82,6 +86,8 @@
     <None Remove="Assets\upper.png" />
     <None Remove="Assets\win.png" />
     <None Remove="Assets\win180.png" />
+    <None Remove="Assets\WinBackground.png" />
+    <None Remove="Assets\WinLeft.png" />
     <None Remove="Assets\wpfui-icon-256.png" />
     <None Remove="Assets\wpfui-icon-1024.png" />
   </ItemGroup>
@@ -119,13 +125,17 @@
     <Resource Include="Assets\box.png" />
     <Resource Include="Assets\boxTransparent.png" />
     <Resource Include="Assets\Kindred_1.jpg" />
-    <Resource Include="Assets\lost.png" />
     <Resource Include="Assets\lost180.png" />
+    <Resource Include="Assets\lost.png" />
+    <Resource Include="Assets\LostBackground.png" />
+    <Resource Include="Assets\LostLeft.png" />
     <Resource Include="Assets\magic.png" />
     <Resource Include="Assets\multikillDouble.png" />
     <Resource Include="Assets\multikillPenta.png" />
     <Resource Include="Assets\multikillQuadra.png" />
     <Resource Include="Assets\multikillTripple.png" />
+    <Resource Include="Assets\objectives.png" />
+    <Resource Include="Assets\objectivesInverted.png" />
     <Resource Include="Assets\rankedEmblem\emblem-bronze.png" />
     <Resource Include="Assets\rankedEmblem\emblem-challenger.png" />
     <Resource Include="Assets\rankedEmblem\emblem-diamond.png" />
@@ -143,6 +153,8 @@
     <Resource Include="Assets\upper.png" />
     <Resource Include="Assets\win.png" />
     <Resource Include="Assets\win180.png" />
+    <Resource Include="Assets\WinBackground.png" />
+    <Resource Include="Assets\WinLeft.png" />
     <Resource Include="Assets\wpfui-icon-256.png" />
     <Resource Include="Assets\wpfui-icon-1024.png" />
   </ItemGroup>
