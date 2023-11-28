@@ -23,6 +23,20 @@
     <Page.Resources>
         <helpers:MvpScoreColorConverter x:Key="MvpScoreColorConverter" />
         <helpers:WinColorConverter x:Key="WinColorConverter" />
+        <helpers:MultikillImageConverter x:Key="MultikillImageConverter"/>
+        <Style TargetType="{x:Type Line}" x:Key="LinesStyle">
+            <Setter Property="Stroke">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="Transparent" Offset="0.0" />
+                        <GradientStop Color="#BD9A55" Offset="0.3" />
+                        <GradientStop Color="#987430" Offset="0.5" />
+                        <GradientStop Color="#987430" Offset="0.7" />
+                        <GradientStop Color="Transparent" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
     <Grid VerticalAlignment="Stretch">
         <Grid.ColumnDefinitions>
@@ -68,10 +82,10 @@
             </lvc:PieChart.Series>
             
         </lvc:PieChart>
-        <Border BorderBrush="Black" BorderThickness="1" CornerRadius="10" HorizontalAlignment="Left" Height="120" Width="510" Margin="0,60,0,0" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top">
+        <Border BorderBrush="Black" BorderThickness="1" CornerRadius="10" HorizontalAlignment="Left" Height="120" Width="350" Margin="0,60,0,0" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top">
             <Grid DataContext="{Binding ViewModel.SummonerMe}">
                 <ui:Image Source="{Binding iconSource}" Height="110" Width="110" Stretch="Fill" HorizontalAlignment="Left" Margin="0,0,0,0" CornerRadius="10"/>
-                
+
                 <TextBlock Text="{Binding name}" HorizontalAlignment="Left" Margin="130,10,0,0" FontSize="20" FontWeight="Bold"/>
                 <TextBlock Text="Ladder Rank: 300 000 (25% of top)" HorizontalAlignment="Left" Margin="130,45,0,0" FontSize="12"/>
                 <ui:Button Content="Update" Margin="130,70,0,0" VerticalAlignment="Top" Width="95" Click="UpdateButton_Click" Name="UpdateButton"/>
@@ -80,39 +94,37 @@
                 </Border>
             </Grid>
         </Border>
-        <Border BorderBrush="Black" BorderThickness="1" CornerRadius="10" HorizontalAlignment="Right" Height="120" Width="510" Margin="0,60,0,0" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top">
-            <Grid DataContext="{Binding ViewModel.SummonerMe.soloRank}">
-                <ui:Image Source="pack://application:,,,/Assets/Banner2.png" Height="70" Width="120" Stretch="Fill" HorizontalAlignment="Left" Margin="90,20,0,0"/>
-                <ui:Image Source="pack://application:,,,/Assets/Black.png" Height="70" Width="300" Stretch="Fill" HorizontalAlignment="Left" Margin="210,20,0,0" CornerRadius="0,10,10,0"/>
-                <TextBlock Text="{Binding queueName}" HorizontalAlignment="Left" Margin="180,40,0,0"/>
-                <TextBlock Text="{Binding rankName}" HorizontalAlignment="Left" Margin="180,70,0,0" FontSize="20" FontWeight="Bold"/>
-                <TextBlock Text="{Binding wins}" HorizontalAlignment="Left" Margin="350,40,0,0" FontSize="12"/>
-                <TextBlock Text="{Binding losses}" HorizontalAlignment="Left" Margin="400,40,0,0" FontSize="12"/>
-                <TextBlock Text="{Binding winRateString}" HorizontalAlignment="Left" Margin="360,60,0,0" FontSize="12"/>
-                <TextBlock Text="{Binding leaguePoinstString}" HorizontalAlignment="Left" Margin="360,80,0,0" FontSize="12"/>
-                <ui:Image Source="{Binding image}" Height="100" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"/>
-            </Grid>
-        </Border>
-        <Border BorderBrush="Black" BorderThickness="1" CornerRadius="10" HorizontalAlignment="Right" Height="120" Width="510" Margin="0,200,0,0" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top">
-            <Grid DataContext="{Binding ViewModel.SummonerMe.flexRank}">
-                <ui:Image Source="pack://application:,,,/Assets/Banner2.png" Height="70" Width="120" Stretch="Fill" HorizontalAlignment="Left" Margin="90,20,0,0"/>
-                <ui:Image Source="pack://application:,,,/Assets/Black.png" Height="70" Width="300" Stretch="Fill" HorizontalAlignment="Left" Margin="210,20,0,0" CornerRadius="0,10,10,0"/>
-                <TextBlock Text="{Binding queueName}" HorizontalAlignment="Left" Margin="180,40,0,0"/>
-                <TextBlock Text="{Binding rankName}" HorizontalAlignment="Left" Margin="180,70,0,0" FontSize="20" FontWeight="Bold"/>
-                <TextBlock Text="{Binding wins}" HorizontalAlignment="Left" Margin="350,40,0,0" FontSize="12"/>
-                <TextBlock Text="{Binding losses}" HorizontalAlignment="Left" Margin="400,40,0,0" FontSize="12"/>
-                <TextBlock Text="{Binding winRateString}" HorizontalAlignment="Left" Margin="360,60,0,0" FontSize="12"/>
-                <TextBlock Text="{Binding leaguePoinstString}" HorizontalAlignment="Left" Margin="360,80,0,0" FontSize="12"/>
-                <ui:Image Source="{Binding image}" Height="100" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"/>
-            </Grid>
-        </Border>
-        
+        <Grid DataContext="{Binding ViewModel.SummonerMe.soloRank}" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="300,80,0,0">
+            <ui:Image Source="pack://application:,,,/Assets/Banners/platinum_banner.png" Width="350" Stretch="Fill" HorizontalAlignment="Center" Margin="0,50,0,0"/>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0,130,0,0">
+                <TextBlock Text="{Binding queueName}" HorizontalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBlock Text="{Binding rankName}" HorizontalAlignment="Center" Margin="0,5,0,0" FontSize="20" FontWeight="Bold"/>
+                <TextBlock Text="{Binding wins}" HorizontalAlignment="Center" Margin="0,5,0,0" FontSize="12"/>
+                <TextBlock Text="{Binding losses}" HorizontalAlignment="Center" Margin="0,5,0,0" FontSize="12"/>
+                <TextBlock Text="{Binding winRateString}" HorizontalAlignment="Center" Margin="0,5,0,0" FontSize="12"/>
+                <TextBlock Text="{Binding leaguePoinstString}" HorizontalAlignment="Center" Margin="0,5,0,0" FontSize="12"/>
+            </StackPanel>
+            <ui:Image Source="{Binding image}" Height="150" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Margin="0,-290,0,0"/>
+        </Grid>
+        <Grid DataContext="{Binding ViewModel.SummonerMe.flexRank}" HorizontalAlignment="Left" Margin="500,80,0,0" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top">
+            <ui:Image Source="pack://application:,,,/Assets/Banners/emerald_banner.png" Width="350" Stretch="Fill" HorizontalAlignment="Center" Margin="0,50,0,0"/>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0,130,0,0">
+                <TextBlock Text="{Binding queueName}" HorizontalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBlock Text="{Binding rankName}" HorizontalAlignment="Center" Margin="0,5,0,0" FontSize="20" FontWeight="Bold"/>
+                <TextBlock Text="{Binding wins}" HorizontalAlignment="Center" Margin="0,5,0,0" FontSize="12"/>
+                <TextBlock Text="{Binding losses}" HorizontalAlignment="Center" Margin="0,5,0,0" FontSize="12"/>
+                <TextBlock Text="{Binding winRateString}" HorizontalAlignment="Center" Margin="0,5,0,0" FontSize="12"/>
+                <TextBlock Text="{Binding leaguePoinstString}" HorizontalAlignment="Center" Margin="0,5,0,0" FontSize="12"/>
+            </StackPanel>
+            <ui:Image Source="{Binding image}" Height="150" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Margin="0,-290,0,0"/>
+        </Grid>
+
         <Button Grid.Column="1" Content="Splash" Margin="433,162,0,0" VerticalAlignment="Top" Width="169" Click="Button_Click_2"/>
         <Button Content="Store Images" Grid.Column="1" Click="Button_Click"/>
 
             <!-- sdfg -->
 
-        <ListView Grid.Row="1" Name="matchList" ItemsSource="{Binding ViewModel.SummonerMatchesView}" Height="600" ScrollViewer.CanContentScroll="False" Margin="0,0,0,50" Grid.ColumnSpan="2">
+        <ListView Grid.Row="1" Name="matchList" ItemsSource="{Binding ViewModel.SummonerMatchesView}" HorizontalAlignment="Stretch" Height="600" Width="1570" ScrollViewer.CanContentScroll="False" Margin="0,0,0,50" Grid.ColumnSpan="2">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
                     <Setter Property="Background" Value="Transparent" />
@@ -141,24 +153,32 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Grid HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                        <Grid HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Height="115">
                             <Grid.Background>
-                                <SolidColorBrush Opacity="0.7">
-                                    <SolidColorBrush.Color>
-                                        <Binding Path="me.win" Converter="{StaticResource WinColorConverter}" />
-                                    </SolidColorBrush.Color>
-                                </SolidColorBrush>
+                                <ImageBrush ImageSource="pack://application:,,,/Assets/backgroundComplete.png">
+                                </ImageBrush>
                             </Grid.Background>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <ui:Button HorizontalAlignment="Right" BorderThickness="1" BorderBrush="AliceBlue" VerticalAlignment="Stretch" Grid.Column="1" Click="ToggleGrid_Clicked"/>
+                            <Button HorizontalAlignment="Right" BorderThickness="0" VerticalAlignment="Center" Grid.Column="1" Click="ToggleGrid_Clicked" Margin="0,0,30,0" Height="30" Width="30">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Image x:Name="ButtonImage" Source="pack://application:,,,/Assets/arrowDown.png"/>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ButtonImage" Property="Source" Value="pack://application:,,,/Assets/arrowDownHover.png"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
 
-                            <Line Y1="0" Y2="90" VerticalAlignment="Center" HorizontalAlignment="Left" Stroke="LightGray" StrokeThickness="1" Grid.Column="0" Margin="30,0,0,0"/>
+                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="70" VerticalAlignment="Center" HorizontalAlignment="Left" StrokeThickness="1" Grid.Column="0" Margin="40,0,0,0"/>
 
-                            <StackPanel Orientation="Vertical" Grid.Column="0" VerticalAlignment="Center" Margin="40,0,0,0">
+                            <StackPanel Orientation="Vertical" Grid.Column="0" VerticalAlignment="Center" Margin="50,0,0,0">
                                 <TextBlock Text="{Binding queueName, Mode=OneWay}" FontWeight="Bold"/>
                                 <TextBlock Text="{Binding victory, Mode=OneWay}" FontWeight="Bold"/>
                                 <TextBlock Text="{Binding gameDuration, Mode=OneWay}" FontWeight="Bold"/>
@@ -167,23 +187,23 @@
 
                             <ui:Image Source="{Binding me.championImage}" CornerRadius="100" Height="50" Width="50" Margin="180,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="0"/>
 
-                            <ui:Image CornerRadius="5" Width="25" Height="25" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="235,26,0,0" Source="{Binding me.summoner1Image, Mode=OneWay}" PresentationOptions:Freeze="True" />
-                            <ui:Image CornerRadius="5" Width="25" Height="25" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="235,0,0,26" Source="{Binding me.summoner2Image, Mode=OneWay}" PresentationOptions:Freeze="True" />
+                            <ui:Image CornerRadius="5" Width="25" Height="25" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="235,30,0,0" Source="{Binding me.summoner1Image, Mode=OneWay}" PresentationOptions:Freeze="True" />
+                            <ui:Image CornerRadius="5" Width="25" Height="25" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="235,0,0,30" Source="{Binding me.summoner2Image, Mode=OneWay}" PresentationOptions:Freeze="True" />
 
-                            <Border Margin="265,26,0,0" Width="25" Height="25" HorizontalAlignment="Left" CornerRadius="15" Padding="1" Grid.Column="0" VerticalAlignment="Top">
+                            <Border Margin="265,30,0,0" Width="25" Height="25" HorizontalAlignment="Left" CornerRadius="15" Padding="1" Grid.Column="0" VerticalAlignment="Top">
                                 <Border.Background>
                                     <SolidColorBrush Color="Black" Opacity="0.5"/>
                                 </Border.Background>
                                 <ui:Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding me.primaryRuneImage, Mode=OneWay}" PresentationOptions:Freeze="True"/>
                             </Border>
-                            <Border Margin="267,0,0,31" Width="20" Height="20" HorizontalAlignment="Left" CornerRadius="10" Padding="2" Grid.Column="0" VerticalAlignment="Bottom">
+                            <Border Margin="267,0,0,35" Width="20" Height="20" HorizontalAlignment="Left" CornerRadius="10" Padding="2" Grid.Column="0" VerticalAlignment="Bottom">
                                 <Border.Background>
                                     <SolidColorBrush Color="Black" Opacity="0.5"/>
                                 </Border.Background>
                                 <ui:Image Source="{Binding me.secondaryRuneImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
                             </Border>
 
-                            <Line Y1="0" Y2="90" VerticalAlignment="Center" HorizontalAlignment="Left" Stroke="LightGray" StrokeThickness="1" Grid.Column="0" Margin="320,0,0,0"/>
+                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="90" VerticalAlignment="Center" HorizontalAlignment="Left" StrokeThickness="1" Grid.Column="0" Margin="320,0,0,0"/>
 
                             <Border Height="35" Width="35" CornerRadius="5" Background="Gray" Margin="330,0,0,0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left">
                                 <ui:Image CornerRadius="5" Source="{Binding me.itemsImages[0], Mode=OneWay}" Width="35" Height="35" PresentationOptions:Freeze="True" />
@@ -204,68 +224,84 @@
                                 <ui:Image CornerRadius="5" Source="{Binding me.itemsImages[5], Mode=OneWay}" Width="35" Height="35" PresentationOptions:Freeze="True" />
                             </Border>
 
-                            <ui:Image Source="{Binding me.itemsImages[6], Mode=OneWay}" CornerRadius="100" Height="35" Width="35" Margin="570,0,0,0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <ui:Image Style="{StaticResource LinesStyle}" Source="{Binding me.itemsImages[6], Mode=OneWay}" CornerRadius="100" Height="35" Width="35" Margin="570,0,0,0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
 
-                            <Border Background="Red" CornerRadius="10" Width="100" Margin="630,24,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                <TextBlock Text="{Binding multikill, Mode=OneWay}" HorizontalAlignment="Center" FontWeight="Bold"/>
-                            </Border>
-                            <Border Height="25" Width="40" CornerRadius="7" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="657,0,0,24" Padding="2">
-                                <Border.Background>
-                                    <SolidColorBrush>
-                                        <SolidColorBrush.Color>
-                                            <Binding Path="me.mvpScoreString" Converter="{StaticResource MvpScoreColorConverter}" />
-                                        </SolidColorBrush.Color>
-                                    </SolidColorBrush>
-                                </Border.Background>
-                                <TextBlock Text="{Binding me.mvpScoreString}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="625,18,0,0" Width="110">
+                                <Border Height="35" CornerRadius="0" Width="110" Margin="0,18,0,5" HorizontalAlignment="Center" VerticalAlignment="Top">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding multikill}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Border.Background>
+                                        <ImageBrush>
+                                            <ImageBrush.ImageSource>
+                                                <Binding Path="multikill" Converter="{StaticResource MultikillImageConverter}" />
+                                            </ImageBrush.ImageSource>
+                                        </ImageBrush>
+                                    </Border.Background>
+                                    <TextBlock Text="{Binding multikill, Mode=OneWay}" HorizontalAlignment="Center" FontWeight="Medium" Margin="0,12,0,0" FontSize="12"/>
+                                </Border>
+                                <Border Height="30" Width="60" CornerRadius="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,28" Padding="2">
+                                    <Border.Background>
+                                        <ImageBrush>
+                                            <ImageBrush.ImageSource>
+                                                <Binding Path="me.mvpScoreString" Converter="{StaticResource MvpScoreColorConverter}" />
+                                            </ImageBrush.ImageSource>
+                                        </ImageBrush>
+                                    </Border.Background>
+                                    <TextBlock Text="{Binding me.mvpScoreString}" FontWeight="Medium" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" Margin="0,5,0,0"/>
+                                </Border>
+                            </StackPanel>
 
+                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="90" VerticalAlignment="Center" HorizontalAlignment="Left" StrokeThickness="1" Grid.Column="0" Margin="740,0,0,0"/>
 
-                            <Line Y1="0" Y2="90" VerticalAlignment="Center" HorizontalAlignment="Left" Stroke="LightGray" StrokeThickness="1" Grid.Column="0" Margin="740,0,0,0"/>
-
-                            <TextBlock Text="{Binding me.kda, Mode=OneWay}" HorizontalAlignment="Left" FontWeight="Bold" Margin="750,15,0,0" VerticalAlignment="Top" Grid.Column="0"/>
+                            <TextBlock Text="{Binding me.kda, Mode=OneWay}" HorizontalAlignment="Left" FontWeight="Bold" Margin="750,20,0,0" VerticalAlignment="Top" Grid.Column="0"/>
                             <TextBlock Text="{Binding me.kdaString, Mode=OneWay}" HorizontalAlignment="Left" FontWeight="Bold" Grid.Column="0" VerticalAlignment="Center" Margin="750,0,0,0"/>
-                            <TextBlock Text="{Binding killP, Mode=OneWay}" HorizontalAlignment="Left" FontWeight="Bold" Grid.Column="0" VerticalAlignment="Bottom" Margin="750,0,0,15"/>
+                            <TextBlock Text="{Binding killP, Mode=OneWay}" HorizontalAlignment="Left" FontWeight="Bold" Grid.Column="0" VerticalAlignment="Bottom" Margin="750,0,0,20"/>
 
-                            <Line Y1="0" Y2="90" VerticalAlignment="Center" HorizontalAlignment="Left" Stroke="LightGray" StrokeThickness="1" Grid.Column="0" Margin="840,0,0,0"/>
+                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="90" VerticalAlignment="Center" HorizontalAlignment="Left" StrokeThickness="1" Grid.Column="0" Margin="840,0,0,0"/>
 
-                            <TextBlock Text="{Binding controlWards, Mode=OneWay}" HorizontalAlignment="Left" FontWeight="Bold" Grid.Column="0" VerticalAlignment="Top" Margin="850,15,0,0"/>
+                            <TextBlock Text="{Binding controlWards, Mode=OneWay}" HorizontalAlignment="Left" FontWeight="Bold" Grid.Column="0" VerticalAlignment="Top" Margin="850,20,0,0"/>
                             <TextBlock Text="{Binding cs, Mode=OneWay}" HorizontalAlignment="Left" FontWeight="Bold" Grid.Column="0" VerticalAlignment="Center" Margin="850,0,0,0"/>
-                            <TextBlock Text="{Binding avgRank, Mode=OneWay}" HorizontalAlignment="Left" FontWeight="Bold" Grid.Column="0" VerticalAlignment="Bottom" Margin="850,0,0,15"/>
+                            <TextBlock Text="{Binding avgRank, Mode=OneWay}" HorizontalAlignment="Left" FontWeight="Bold" Grid.Column="0" VerticalAlignment="Bottom" Margin="850,0,0,20"/>
 
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Top" Grid.Column="1" Margin="0,7,0,0">
+                                <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Top" Grid.Column="1" Margin="80,0,0,3" HorizontalAlignment="Left" Source="{Binding participants[0].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
+                                <ui:Image CornerRadius="10" Width="18" Height="18"  VerticalAlignment="Top" Grid.Column="1" Margin="80,0,0,3" HorizontalAlignment="Left" Source="{Binding participants[1].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
+                                <ui:Image CornerRadius="10" Width="18" Height="18"  VerticalAlignment="Center" Grid.Column="1" Margin="80,0,0,3" HorizontalAlignment="Left" Source="{Binding participants[2].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
+                                <ui:Image CornerRadius="10" Width="18" Height="18"  VerticalAlignment="Bottom" Grid.Column="1" Margin="80,0,0,3" HorizontalAlignment="Left" Source="{Binding participants[3].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
+                                <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Bottom" Grid.Column="1" Margin="80,0,0,2" HorizontalAlignment="Left" Source="{Binding participants[4].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0">
+                                <TextBlock Text="{Binding participants[0].summonerName, Mode=OneWay}" Padding="1" VerticalAlignment="Top" Grid.Column="1" Margin="105,0,0,0" HorizontalAlignment="Left"/>
+                                <TextBlock Text="{Binding participants[1].summonerName, Mode=OneWay}" Padding="1" VerticalAlignment="Top" Grid.Column="1" Margin="105,0,0,0" HorizontalAlignment="Left"/>
+                                <TextBlock Text="{Binding participants[2].summonerName, Mode=OneWay}" Padding="1" VerticalAlignment="Center" Grid.Column="1" Margin="105,0,0,0" HorizontalAlignment="Left"/>
+                                <TextBlock Text="{Binding participants[3].summonerName, Mode=OneWay}" Padding="1" VerticalAlignment="Bottom" Grid.Column="1" Margin="105,0,0,0" HorizontalAlignment="Left"/>
+                                <TextBlock Text="{Binding participants[4].summonerName, Mode=OneWay}" Padding="1" VerticalAlignment="Bottom" Grid.Column="1" Margin="105,0,0,0" HorizontalAlignment="Left"/>
+                            </StackPanel>
 
-                            <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Top" Grid.Column="1" Margin="80,2,0,3" HorizontalAlignment="Left" Source="{Binding participants[0].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
-                            <TextBlock Text="{Binding participants[0].summonerName, Mode=OneWay}" Padding="0" VerticalAlignment="Top" Grid.Column="1" Margin="105,0,0,0" HorizontalAlignment="Left"/>
+                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="90" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" Grid.Column="1"/>
 
-                            <ui:Image CornerRadius="10" Width="18" Height="18"  VerticalAlignment="Top" Grid.Column="1" Margin="80,23,0,3" HorizontalAlignment="Left" Source="{Binding participants[1].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
-                            <TextBlock Text="{Binding participants[1].summonerName, Mode=OneWay}" Padding="0" VerticalAlignment="Top" Grid.Column="1" Margin="105,21,0,0" HorizontalAlignment="Left"/>
-
-                            <ui:Image CornerRadius="10" Width="18" Height="18"  VerticalAlignment="Top" Grid.Column="1" Margin="80,44,0,3" HorizontalAlignment="Left" Source="{Binding participants[2].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
-                            <TextBlock Text="{Binding participants[2].summonerName, Mode=OneWay}" Padding="0" VerticalAlignment="Top" Grid.Column="1" Margin="105,42,0,0" HorizontalAlignment="Left"/>
-
-                            <ui:Image CornerRadius="10" Width="18" Height="18"  VerticalAlignment="Top" Grid.Column="1" Margin="80,65,0,3" HorizontalAlignment="Left" Source="{Binding participants[3].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
-                            <TextBlock Text="{Binding participants[3].summonerName, Mode=OneWay}" Padding="0" VerticalAlignment="Top" Grid.Column="1" Margin="105,63,0,0" HorizontalAlignment="Left"/>
-
-                            <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Bottom" Grid.Column="1" Margin="80,86,0,2" HorizontalAlignment="Left" Source="{Binding participants[4].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
-                            <TextBlock Text="{Binding participants[4].summonerName, Mode=OneWay}" Padding="0" VerticalAlignment="Top" Grid.Column="1" Margin="105,84,0,2" HorizontalAlignment="Left"/>
-
-                            <Line Y1="0" Y2="90" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="LightGray" StrokeThickness="1" Grid.Column="1"/>
-
-                            <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Top" Grid.Column="1" Margin="0,2,80,3" HorizontalAlignment="Right" Source="{Binding participants[5].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
-                            <TextBlock Text="{Binding participants[5].summonerName, Mode=OneWay}" Padding="0" VerticalAlignment="Top" Grid.Column="1" Margin="0,0,105,0" HorizontalAlignment="Right"/>
-
-                            <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Top" Grid.Column="1" Margin="0,23,80,3" HorizontalAlignment="Right" Source="{Binding participants[6].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
-                            <TextBlock Text="{Binding participants[6].summonerName, Mode=OneWay}" Padding="0" VerticalAlignment="Top" Grid.Column="1" Margin="0,21,105,0" HorizontalAlignment="Right" />
-
-                            <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Top" Grid.Column="1" Margin="0,44,80,3" HorizontalAlignment="Right" Source="{Binding participants[7].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
-                            <TextBlock Text="{Binding participants[7].summonerName, Mode=OneWay}" Padding="0" VerticalAlignment="Top" Grid.Column="1" Margin="0,42,105,0" HorizontalAlignment="Right" />
-
-                            <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Top" Grid.Column="1" Margin="0,65,80,3" HorizontalAlignment="Right" Source="{Binding participants[8].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
-                            <TextBlock Text="{Binding participants[8].summonerName, Mode=OneWay}" Padding="0" VerticalAlignment="Top" Grid.Column="1" Margin="0,63,105,0" HorizontalAlignment="Right" />
-
-                            <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,86,80,2" HorizontalAlignment="Right" Source="{Binding participants[9].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
-                            <TextBlock Text="{Binding participants[9].summonerName, Mode=OneWay}" Padding="0" VerticalAlignment="Top" Grid.Column="1" Margin="0,84,105,0" HorizontalAlignment="Right" />
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Top" Grid.Column="1" Margin="0,7,0,0" HorizontalAlignment="Right">
+                                <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Top" Grid.Column="1" Margin="0,0,80,3" HorizontalAlignment="Right" Source="{Binding participants[5].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
+                                <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Top" Grid.Column="1" Margin="0,0,80,3" HorizontalAlignment="Right" Source="{Binding participants[6].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
+                                <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Center" Grid.Column="1" Margin="0,0,80,3" HorizontalAlignment="Right" Source="{Binding participants[7].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
+                                <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,80,3" HorizontalAlignment="Right" Source="{Binding participants[8].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
+                                <ui:Image CornerRadius="10" Width="18" Height="18" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,80,2" HorizontalAlignment="Right" Source="{Binding participants[9].championImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0" HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding participants[5].summonerName, Mode=OneWay}" Padding="1" VerticalAlignment="Top" Grid.Column="1" Margin="0,0,105,0" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding participants[6].summonerName, Mode=OneWay}" Padding="1" VerticalAlignment="Top" Grid.Column="1" Margin="0,0,105,0" HorizontalAlignment="Right" />
+                                <TextBlock Text="{Binding participants[7].summonerName, Mode=OneWay}" Padding="1" VerticalAlignment="Center" Grid.Column="1" Margin="0,0,105,0" HorizontalAlignment="Right" />
+                                <TextBlock Text="{Binding participants[8].summonerName, Mode=OneWay}" Padding="1" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,105,0" HorizontalAlignment="Right" />
+                                <TextBlock Text="{Binding participants[9].summonerName, Mode=OneWay}" Padding="1" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,105,0" HorizontalAlignment="Right" />
+                            </StackPanel>
                         </Grid>
                         <Grid Grid.ColumnSpan="2" Grid.Row="1"  HorizontalAlignment="Stretch" VerticalAlignment="Center" Visibility="{Binding IsGridVisible, Mode=OneWay}">
                             <Grid.Background>
@@ -292,15 +328,16 @@
 
                         </Grid>
 
-                        <Grid Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" Visibility="{Binding IsGridVisible, Mode=OneWay}">
+                        <Grid Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Width="1550">
                             <Grid.Background>
-                                <SolidColorBrush Opacity="0.7">
-                                    <SolidColorBrush.Color>
-                                        <Binding Path="participantsTeam1[0].win" Converter="{StaticResource WinColorConverter}" />
-                                    </SolidColorBrush.Color>
-                                </SolidColorBrush>
+                                <ImageBrush ImageSource="pack://application:,,,/Assets/score.png">
+                                </ImageBrush>
                             </Grid.Background>
-                            <ListView ItemsSource="{Binding participantsTeam1, Mode=OneWay}" Name="ParticipantsList">
+                            <Grid HorizontalAlignment="Left" Visibility="{Binding IsGridVisible, Mode=OneWay}" Margin="0,53,0,10">
+                                <Grid.Background>
+                                    <ImageBrush ImageSource="pack://application:,,,/Assets/lost.png" Opacity="0.7"/>
+                                </Grid.Background>
+                                <ListView ItemsSource="{Binding participantsTeam1, Mode=OneWay}" Name="ParticipantsList" Margin="0,5,0,0">
                                 <ListView.Template>
                                     <ControlTemplate>
                                         <ItemsPresenter></ItemsPresenter>
@@ -308,8 +345,8 @@
                                 </ListView.Template>
                                 <ListView.ItemTemplate>
                                     <DataTemplate DataType="{x:Type models:Participant}">
-                                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                            <ui:Image Source="{Binding championImage}" CornerRadius="100" Height="35" Width="35" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0"/>
+                                            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,0,0,0">
+                                                <ui:Image Source="{Binding championImage}" CornerRadius="100" Height="35" Width="35" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0"/>
 
                                             <Border CornerRadius="10" Background="DimGray" Width="15" Height="15" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,0">
                                                 <TextBlock Text="{Binding champLevel, Mode=OneWay}" FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -331,36 +368,36 @@
                                                 <ui:Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding secondaryRuneImage, Mode=OneWay}" PresentationOptions:Freeze="True" />
                                             </Border>
 
-                                            <Border Height="20" Width="30" CornerRadius="7" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="115,0,0,0" Padding="2">
-                                                <Border.Background>
-                                                    <SolidColorBrush>
-                                                        <SolidColorBrush.Color>
-                                                            <Binding Path="mvpScoreString" Converter="{StaticResource MvpScoreColorConverter}" />
-                                                        </SolidColorBrush.Color>
-                                                    </SolidColorBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="{Binding mvpScoreString}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Border Height="25" Width="45" CornerRadius="7" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="115,0,0,0" Padding="2">
+                                                    <Border.Background>
+                                                        <ImageBrush>
+                                                            <ImageBrush.ImageSource>
+                                                                <Binding Path="mvpScoreString" Converter="{StaticResource MvpScoreColorConverter}" />
+                                                            </ImageBrush.ImageSource>
+                                                        </ImageBrush>
+                                                    </Border.Background>
+                                                    <TextBlock Text="{Binding mvpScoreString}" FontSize="11" FontWeight="Medium" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,4,0,0"/>
                                             </Border>
 
 
-                                            <Line Y1="0" Y2="40" Stroke="LightGray" VerticalAlignment="Center" Margin="165,0,0,0"/>
+                                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="40" VerticalAlignment="Center" Margin="165,0,0,0"/>
 
                                             <TextBlock Text="{Binding summonerName, Mode=OneWay}" FontWeight="Bold" FontSize="12" HorizontalAlignment="Left" Margin="175,2,0,0" MaxWidth="100" MinWidth="100" VerticalAlignment="Top"/>
                                             <TextBlock Text="{Binding rank, Mode=OneWay}" FontSize="11" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="175,0,0,2"/>
 
-                                            <Line Y1="0" Y2="40" Stroke="LightGray" VerticalAlignment="Center" Margin="290,0,0,0"/>
+                                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="40" VerticalAlignment="Center" Margin="290,0,0,0"/>
 
                                             <TextBlock Text="{Binding kda}" Margin="300,0,0,0" FontWeight="Bold" FontSize="12" HorizontalAlignment="Left" Padding="0" MaxWidth="80" MinWidth="80" VerticalAlignment="Top"/>
 
                                             <TextBlock FontSize="11" HorizontalAlignment="Left" Padding="0" Text="{Binding killParticipation, Mode=OneWay}" VerticalAlignment="Center" Margin="300,0,0,0"/>
                                             <TextBlock Text="{Binding kdaString}" FontSize="11" HorizontalAlignment="Left" Padding="0" VerticalAlignment="Bottom" Margin="300,0,0,0"/>
 
-                                            <Line Y1="0" Y2="40" Stroke="LightGray" VerticalAlignment="Center" Margin="370,0,0,0"/>
+                                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="40" VerticalAlignment="Center" Margin="370,0,0,0"/>
 
                                             <TextBlock Text="{Binding damageDealtParsed}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Left" MaxWidth="50" MinWidth="50" Margin="380,2,0,0" VerticalAlignment="Top"/>
                                             <TextBlock Text="{Binding damageTakenParsed}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Left" MaxWidth="50" MinWidth="50" Margin="380,0,0,2" VerticalAlignment="Bottom"/>
 
-                                            <Line Y1="0" Y2="40" Stroke="LightGray" VerticalAlignment="Center" Margin="450,0,0,0"/>
+                                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="40" VerticalAlignment="Center" Margin="450,0,0,0"/>
 
                                             <TextBlock Text="{Binding totalCs, Mode=OneWay}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="460,2,0,0"/>
                                             <TextBlock Text="{Binding csPerMin, Mode=OneWay}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="460,0,0,2"/>
@@ -389,16 +426,12 @@
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
-                        </Grid>
-                        <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Visibility="{Binding IsGridVisible, Mode=OneWay}">
-                            <Grid.Background>
-                                <SolidColorBrush Opacity="0.7">
-                                    <SolidColorBrush.Color>
-                                        <Binding Path="participantsTeam2[0].win" Converter="{StaticResource WinColorConverter}" />
-                                    </SolidColorBrush.Color>
-                                </SolidColorBrush>
-                            </Grid.Background>
-                            <ListView ItemsSource="{Binding participantsTeam2, Mode=OneWay}">
+                            </Grid>
+                            <Grid HorizontalAlignment="Right" Visibility="{Binding IsGridVisible, Mode=OneWay}" Margin="0,53,0,10">
+                                <Grid.Background>
+                                    <ImageBrush ImageSource="pack://application:,,,/Assets/win180.png" Opacity="0.7"/>
+                                </Grid.Background>
+                                <ListView ItemsSource="{Binding participantsTeam2, Mode=OneWay}" Margin="0,5,0,0">
                                 <ListView.Template>
                                     <ControlTemplate>
                                         <ItemsPresenter></ItemsPresenter>
@@ -406,7 +439,7 @@
                                 </ListView.Template>
                                 <ListView.ItemTemplate>
                                     <DataTemplate DataType="{x:Type models:Participant}">
-                                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                             <ui:Image Source="{Binding itemsImages[6]}" CornerRadius="100" Height="35" Width="35" Margin="0,0,720,0" VerticalAlignment="Center" HorizontalAlignment="Right"/>
 
                                             <Border Height="30" Width="30" CornerRadius="5" Background="Gray" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,685,0">
@@ -431,34 +464,34 @@
                                             <TextBlock Text="{Binding totalCs, Mode=OneWay}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,460,0"/>
                                             <TextBlock Text="{Binding csPerMin, Mode=OneWay}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,460,2"/>
 
-                                            <Line Y1="0" Y2="40" Stroke="LightGray" VerticalAlignment="Center" Margin="0,0,450,0" HorizontalAlignment="Right"/>
+                                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="40" VerticalAlignment="Center" Margin="0,0,450,0" HorizontalAlignment="Right"/>
 
                                             <TextBlock Text="{Binding damageDealtParsed}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,380,0"/>
                                             <TextBlock Text="{Binding damageTakenParsed}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,380,2"/>
 
-                                            <Line Y1="0" Y2="40" Stroke="LightGray" VerticalAlignment="Center" Margin="0,0,370,0" HorizontalAlignment="Right"/>
+                                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="40" VerticalAlignment="Center" Margin="0,0,370,0" HorizontalAlignment="Right"/>
 
                                             <Label Content="{Binding kda}" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right" Padding="0" MaxWidth="80" MinWidth="80" HorizontalContentAlignment="Right" VerticalAlignment="Top" Margin="0,0,300,0"/>
 
                                             <TextBlock Text="{Binding killParticipation, Mode=OneWay}" FontSize="11" HorizontalAlignment="Right" Padding="0" VerticalAlignment="Center" Margin="0,0,300,0"/>
                                             <TextBlock Text="{Binding kdaString}" FontSize="11" HorizontalAlignment="Right" Padding="0" VerticalAlignment="Bottom" Margin="0,0,300,0"/>
 
-                                            <Line Y1="0" Y2="40" Stroke="LightGray" VerticalAlignment="Center" Margin="0,0,290,0" HorizontalAlignment="Right"/>
+                                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="40" VerticalAlignment="Center" Margin="0,0,290,0" HorizontalAlignment="Right"/>
 
                                             <Label Content="{Binding summonerName, Mode=OneWay}" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right" HorizontalContentAlignment="Right" Margin="0,2,175,0" MaxWidth="100" MinWidth="100" VerticalAlignment="Top"/>
                                             <TextBlock Text="{Binding rank, Mode=OneWay}" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,175,2"/>
 
-                                            <Line Y1="0" Y2="40" Stroke="LightGray" VerticalAlignment="Center" Margin="0,0,165,0" HorizontalAlignment="Right"/>
+                                            <Line Style="{StaticResource LinesStyle}" Y1="0" Y2="40" VerticalAlignment="Center" Margin="0,0,165,0" HorizontalAlignment="Right"/>
 
-                                            <Border Height="20" Width="30" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,115,0" Padding="2">
+                                            <Border Height="25" Width="45" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,115,0" Padding="2">
                                                 <Border.Background>
-                                                    <SolidColorBrush>
-                                                        <SolidColorBrush.Color>
-                                                            <Binding Path="mvpScoreString" Converter="{StaticResource MvpScoreColorConverter}" />
-                                                        </SolidColorBrush.Color>
-                                                    </SolidColorBrush>
+                                                        <ImageBrush>
+                                                            <ImageBrush.ImageSource>
+                                                                <Binding Path="mvpScoreString" Converter="{StaticResource MvpScoreColorConverter}" />
+                                                            </ImageBrush.ImageSource>
+                                                        </ImageBrush>
                                                 </Border.Background>
-                                                <TextBlock Text="{Binding mvpScoreString}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding mvpScoreString}" FontSize="11" FontWeight="Medium" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,4,0,0"/>
                                             </Border>
 
 
@@ -487,6 +520,7 @@
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
+                        </Grid>
                         </Grid>
                     </Grid>
                 </DataTemplate>

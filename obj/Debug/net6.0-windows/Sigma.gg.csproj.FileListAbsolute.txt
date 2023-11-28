@@ -148,3 +148,4 @@ E:\VSProjects\Sigma.gg2\bin\Debug\net6.0-windows\System.Security.Cryptography.Pr
 E:\VSProjects\Sigma.gg2\bin\Debug\net6.0-windows\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
 E:\VSProjects\Sigma.gg2\bin\Debug\net6.0-windows\LiveCharts.dll
 E:\VSProjects\Sigma.gg2\bin\Debug\net6.0-windows\LiveCharts.Wpf.dll
+E:\VSProjects\Sigma.gg2\obj\Debug\net6.0-windows\Sigma.gg.sourcelink.json

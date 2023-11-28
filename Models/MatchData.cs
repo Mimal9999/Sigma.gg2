@@ -510,7 +510,7 @@ namespace Sigma.gg.Models
             }
             else
             {
-                return "No Multikill";
+                return null;
             }
         }
         public static string TimeAgoFromUnixTimestamp(long unixTimestampMilliseconds)

@@ -12,15 +12,18 @@ public class MvpScoreColorConverter : IValueConverter
         {
             if (mvpScoreString == "MVP")
             {
-                return (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("Orange");
+                //return (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("Orange");
+                return "pack://application:,,,/Assets/scoreMVP.png";
             }
             else if (mvpScoreString == "ACE")
             {
-                return (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("Magenta");
+                //return (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("Magenta");
+                return "pack://application:,,,/Assets/scoreACE.png";
             }
             else
             {
-                return (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("DimGray");
+                //return (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("DimGray");
+                return "pack://application:,,,/Assets/scoreNone.png";
             }
         }
         else

@@ -27,7 +27,15 @@
 
   <ItemGroup>
     <None Remove="Assets\588.png" />
+    <None Remove="Assets\arrowDown.png" />
+    <None Remove="Assets\arrowDownHover.png" />
+    <None Remove="Assets\background.jpg" />
     <None Remove="Assets\background.png" />
+    <None Remove="Assets\background2.png" />
+    <None Remove="Assets\background3.png" />
+    <None Remove="Assets\background4.png" />
+    <None Remove="Assets\background5.png" />
+    <None Remove="Assets\backgroundComplete.png" />
     <None Remove="Assets\Banner.png" />
     <None Remove="Assets\Banner2.png" />
     <None Remove="Assets\Banners\bronze_banner.png" />
@@ -45,7 +53,18 @@
     <None Remove="Assets\Banners\unranked_banner.png" />
     <None Remove="Assets\Black.png" />
     <None Remove="Assets\Border.png" />
+    <None Remove="Assets\bottom.png" />
+    <None Remove="Assets\bottomred.png" />
+    <None Remove="Assets\box.png" />
+    <None Remove="Assets\boxTransparent.png" />
     <None Remove="Assets\Kindred_1.jpg" />
+    <None Remove="Assets\lost.png" />
+    <None Remove="Assets\lost180.png" />
+    <None Remove="Assets\magic.png" />
+    <None Remove="Assets\multikillDouble.png" />
+    <None Remove="Assets\multikillPenta.png" />
+    <None Remove="Assets\multikillQuadra.png" />
+    <None Remove="Assets\multikillTripple.png" />
     <None Remove="Assets\rankedEmblem\emblem-bronze.png" />
     <None Remove="Assets\rankedEmblem\emblem-challenger.png" />
     <None Remove="Assets\rankedEmblem\emblem-diamond.png" />
@@ -56,14 +75,28 @@
     <None Remove="Assets\rankedEmblem\emblem-platinum.png" />
     <None Remove="Assets\rankedEmblem\emblem-silver.png" />
     <None Remove="Assets\rankedEmblem\wings\wings_diamond.png" />
+    <None Remove="Assets\score.png" />
+    <None Remove="Assets\scoreACE.png" />
+    <None Remove="Assets\scoreMVP.png" />
+    <None Remove="Assets\scoreNone.png" />
     <None Remove="Assets\upper.png" />
+    <None Remove="Assets\win.png" />
+    <None Remove="Assets\win180.png" />
     <None Remove="Assets\wpfui-icon-256.png" />
     <None Remove="Assets\wpfui-icon-1024.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Assets\588.png" />
+    <Resource Include="Assets\arrowDown.png" />
+    <Resource Include="Assets\arrowDownHover.png" />
+    <Resource Include="Assets\background.jpg" />
     <Resource Include="Assets\background.png" />
+    <Resource Include="Assets\background2.png" />
+    <Resource Include="Assets\background3.png" />
+    <Resource Include="Assets\background4.png" />
+    <Resource Include="Assets\background5.png" />
+    <Resource Include="Assets\backgroundComplete.png" />
     <Resource Include="Assets\Banner.png" />
     <Resource Include="Assets\Banner2.png" />
     <Resource Include="Assets\Banners\bronze_banner.png" />
@@ -81,7 +114,18 @@
     <Resource Include="Assets\Banners\unranked_banner.png" />
     <Resource Include="Assets\Black.png" />
     <Resource Include="Assets\Border.png" />
+    <Resource Include="Assets\bottom.png" />
+    <Resource Include="Assets\bottomred.png" />
+    <Resource Include="Assets\box.png" />
+    <Resource Include="Assets\boxTransparent.png" />
     <Resource Include="Assets\Kindred_1.jpg" />
+    <Resource Include="Assets\lost.png" />
+    <Resource Include="Assets\lost180.png" />
+    <Resource Include="Assets\magic.png" />
+    <Resource Include="Assets\multikillDouble.png" />
+    <Resource Include="Assets\multikillPenta.png" />
+    <Resource Include="Assets\multikillQuadra.png" />
+    <Resource Include="Assets\multikillTripple.png" />
     <Resource Include="Assets\rankedEmblem\emblem-bronze.png" />
     <Resource Include="Assets\rankedEmblem\emblem-challenger.png" />
     <Resource Include="Assets\rankedEmblem\emblem-diamond.png" />
@@ -92,7 +136,13 @@
     <Resource Include="Assets\rankedEmblem\emblem-platinum.png" />
     <Resource Include="Assets\rankedEmblem\emblem-silver.png" />
     <Resource Include="Assets\rankedEmblem\wings\wings_diamond.png" />
+    <Resource Include="Assets\score.png" />
+    <Resource Include="Assets\scoreACE.png" />
+    <Resource Include="Assets\scoreMVP.png" />
+    <Resource Include="Assets\scoreNone.png" />
     <Resource Include="Assets\upper.png" />
+    <Resource Include="Assets\win.png" />
+    <Resource Include="Assets\win180.png" />
     <Resource Include="Assets\wpfui-icon-256.png" />
     <Resource Include="Assets\wpfui-icon-1024.png" />
   </ItemGroup>
